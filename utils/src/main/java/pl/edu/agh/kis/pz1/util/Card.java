@@ -32,5 +32,4 @@ public class Card {
     public String getString() {
         return "(" + String.valueOf(suit) + "," + String.valueOf(rank)+") ";
     }
-
 }
