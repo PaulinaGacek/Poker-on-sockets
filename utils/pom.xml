@@ -12,7 +12,7 @@
     <artifactId>utils</artifactId>
     <packaging>jar</packaging>
 
-    <name>Modul na klasy uzytkowe</name>
+    <name>UTILS</name>
 
     <dependencies>
 

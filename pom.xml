@@ -5,7 +5,7 @@
   <artifactId>multi-module</artifactId>
   <version>1.0</version>
 
-  <name>Przyklad - aplikacja wielomodulowa z dwoma modulami z klasa Main i metoda main</name>
+  <name>Pom macierzysty</name>
   <packaging>pom</packaging>
 
   <!-- Dodane przez pskrzynski -->

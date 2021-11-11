@@ -8,8 +8,8 @@
     <version>1.0</version>
   </parent>
 
-  <artifactId>main2</artifactId>
-  <name>Drugi modul wykonywalny aplikacji - klasa Main2 z metoda main</name>
+  <artifactId>poker-client</artifactId>
+  <name>CLIENT</name>
 
   <!-- Dodane przez pskrzynski -->
   <properties>
@@ -71,15 +71,10 @@
       <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
         <groupId>pl.edu.agh.kis.pz1</groupId>
         <artifactId>utils</artifactId>
         <version>${project.version}</version>
     </dependency>
-
-
   </dependencies>
-
-
 </project>
