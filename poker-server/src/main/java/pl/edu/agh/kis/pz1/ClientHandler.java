@@ -169,7 +169,7 @@ public class ClientHandler implements Runnable{
                 broadcastMessageToItself("Improper syntax of your answer, input number between 1 and 3");
                 s = bufferedReader.readLine();
             }
-            numberOnly = s.replaceAll("[^0-9]", "");
+            numberOnly = extractNumbersFromString(s);
             option = Integer.parseInt(numberOnly);
             System.out.println(getClientUsername()+ " chose option "+option);
         } catch (IOException e){
@@ -179,7 +179,7 @@ public class ClientHandler implements Runnable{
     }
 
     private boolean isChoiceSyntaxOk(String answer){
-        String numberOnly = answer.replaceAll("[^0-9]", "");
+        String numberOnly = extractNumbersFromString(answer);
         if(numberOnly.equals(""))
             return false;
         int number = Integer.parseInt(numberOnly);
@@ -195,7 +195,7 @@ public class ClientHandler implements Runnable{
                 broadcastMessageToItself("Improper syntax of your answer, input positive number");
                 s = bufferedReader.readLine();
             }
-            numberOnly = s.replaceAll("[^0-9]", "");
+            numberOnly = extractNumbersFromString(s);
             option = Integer.parseInt(numberOnly);
             System.out.println("Option "+option);
         } catch (IOException e){
@@ -206,10 +206,14 @@ public class ClientHandler implements Runnable{
 
 
     private boolean isStakeSyntaxOk(String answer){
-        String numberOnly = answer.replaceAll("[^0-9]", "");
+        String numberOnly = extractNumbersFromString(answer);
         if(numberOnly.equals(""))
             return false;
         int number = Integer.parseInt(numberOnly);
         return number >= 0;
+    }
+
+    private String extractNumbersFromString(String answer){
+        return answer.replaceAll("[^0-9]", "");
     }
 }

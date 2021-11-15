@@ -51,6 +51,7 @@ public class Server {
         }
         catch(IOException e){
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -61,11 +62,10 @@ public class Server {
     }
 
     //game
+    public int getNrOfPlayers(){return nrOfPlayers;}
     private void updateNrOfPlayers(){
         nrOfPlayers = ClientHandler.clientHandlers.size();
     }
-    public int getNrOfPlayers(){return nrOfPlayers;}
-
     private void waitForMorePlayers(ClientHandler clientHandler) {
         if(nrOfPlayers<3)
             clientHandler.broadcastMessageToAll("We are still waiting for " + (3-nrOfPlayers)+ " players...");

@@ -12,12 +12,12 @@ public class DeckTest {
 
     @Test
     public void shuffleTest(){
-        int unshuffledCards = 0;
+        int sortedCards = 0;
         for(int i = 0; i < sortedDeck.getSize(); ++i){
             if(sortedDeck.getCard(i)==shuffledDeck.getCard(0)){
-                unshuffledCards += 1;
+                sortedCards += 1;
             }
         }
-        assertTrue(unshuffledCards < 10);
+        assertTrue(sortedCards < 10);
     }
 }
