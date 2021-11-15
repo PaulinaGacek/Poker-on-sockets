@@ -1,13 +1,11 @@
 package pl.edu.agh.kis.pz1;
-
-import pl.edu.agh.kis.pz1.util.TextUtils;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-    private ServerSocket serverSocket; // responsible for handling communication
-    public static int nrOfPlayers = ClientHandler.clientHandlers.size();
+    private final ServerSocket serverSocket; // responsible for handling communication
+    private static int nrOfPlayers = ClientHandler.clientHandlers.size();
 
     public Server(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
@@ -16,7 +14,7 @@ public class Server {
     /**
      * Keeps server running while server socket is not closed
      */
-    public void startServer(){
+    private void startServer(){
         try{
             Game game = new Game();
             game.deck.displayDeck();
@@ -45,7 +43,7 @@ public class Server {
         }
     }
 
-    public void closeServerSocket(){
+    private void closeServerSocket(){
         try{
             if(serverSocket != null){
                 serverSocket.close();
@@ -63,9 +61,10 @@ public class Server {
     }
 
     //game
-    public static void updateNrOfPlayers(){
+    private void updateNrOfPlayers(){
         nrOfPlayers = ClientHandler.clientHandlers.size();
     }
+    public int getNrOfPlayers(){return nrOfPlayers;}
 
     private void waitForMorePlayers(ClientHandler clientHandler) {
         if(nrOfPlayers<3)

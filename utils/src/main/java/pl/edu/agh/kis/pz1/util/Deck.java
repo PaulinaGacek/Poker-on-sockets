@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class Deck {
     private int size = 52;
+    private final Random rand = new Random();
     private boolean isSorted = false;
     private boolean isInitialized = false;
     private static final Suit[] suitArray = {Suit.club, Suit.diamond, Suit.heart,Suit.spade};
@@ -23,7 +24,6 @@ public class Deck {
     }
 
     private void shuffle() {
-        Random rand = new Random();
         int MAX_NR_OF_SHUFFLES = 10;
         int nrOfShuffles = rand.nextInt(MAX_NR_OF_SHUFFLES);
         for(int i = 0; i < nrOfShuffles; ++i) {

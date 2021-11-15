@@ -1,7 +1,6 @@
 package pl.edu.agh.kis.pz1;
 
 import pl.edu.agh.kis.pz1.util.Card;
-import javax.imageio.IIOException;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -13,7 +12,6 @@ public class Client {
     private BufferedWriter bufferedWriter;
     private BufferedReader bufferedReader;
     private String userName;
-    private ArrayList<Card> cards; //5 cards
 
     public Client(Socket socket, String userName) {
         try{
