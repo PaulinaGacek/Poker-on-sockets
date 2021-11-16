@@ -19,6 +19,7 @@
       <module>utils</module>
       <module>poker-server</module>
       <module>poker-client</module>
+      <module>model</module>
   </modules>
 
 
@@ -38,6 +39,11 @@
           <dependency>
               <groupId>pl.edu.agh.kis.pz1</groupId>
               <artifactId>utils</artifactId>
+              <version>${project.version}</version>
+          </dependency>
+          <dependency>
+              <groupId>pl.edu.agh.kis.pz1</groupId>
+              <artifactId>model</artifactId>
               <version>${project.version}</version>
           </dependency>
 

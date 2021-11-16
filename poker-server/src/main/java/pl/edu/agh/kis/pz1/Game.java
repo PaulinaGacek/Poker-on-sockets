@@ -63,14 +63,16 @@ public class Game {
 
     private void handleMove(int move) {
         if(move==PASS){
-            currentPlayer.hasPassed = true;
+            currentPlayer.player.setHasPassed();
             currentPlayer.broadcastMessageToOthers(currentPlayer.getClientUsername()+" passed");
         }else if(move==RAISE){
             currentPlayer.broadcastMessageToItself("Entrance stake you want to raise: ");
             int raise = currentPlayer.raiseStakes();
-            currentPlayer.poolInCurrentBetting+= raise;
-            currentPlayer.pool -= raise;
-            poolInCurrentBetting = currentPlayer.poolInCurrentBetting;
+            currentPlayer.player.setPoolInCurrentBetting(
+                    currentPlayer.player.getPoolInCurrentBetting()+raise
+            );
+            currentPlayer.player.pay(raise);
+            poolInCurrentBetting = currentPlayer.player.getPoolInCurrentBetting();
         }else if(move==WAIT){
             currentPlayer.broadcastMessageToOthers("\n" + currentPlayer.getClientUsername()+" waits");
         }
@@ -78,7 +80,7 @@ public class Game {
 
     private boolean isMovePossible(int move){
         if(move==WAIT){
-            return poolInCurrentBetting == currentPlayer.poolInCurrentBetting;
+            return poolInCurrentBetting == currentPlayer.player.getPoolInCurrentBetting();
         }else if(move==RAISE) {
             return currentPlayer.getPool() > 0;
         }
@@ -93,7 +95,7 @@ public class Game {
      */
     private boolean checkIfRoundIsComplete(){
         for(int i = 0; i < playersInGame.size(); ++i){
-            if(playersInGame.get(i).hasPassed){
+            if(playersInGame.get(i).player.getHasPassed()){
                 playersInGame.remove(playersInGame.get(i));
             }
         }
@@ -102,7 +104,7 @@ public class Game {
             return true;
         }
         for(ClientHandler player: playersInGame){
-            if(player.poolInCurrentBetting != poolInCurrentBetting){
+            if(player.player.getPoolInCurrentBetting() != poolInCurrentBetting){
                 return false;
             }
         }
@@ -146,7 +148,7 @@ public class Game {
     private void updatePlayersArray() {
         int indexToRemove = -1;
         for(int i = 0; i < playersInGame.size();++i){
-            if(playersInGame.get(i).hasPassed){
+            if(playersInGame.get(i).player.getHasPassed()){
                 indexToRemove = i;
                 break;
             }

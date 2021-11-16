@@ -77,9 +77,11 @@
         <artifactId>utils</artifactId>
         <version>${project.version}</version>
     </dependency>
-
-
+    <dependency>
+      <groupId>pl.edu.agh.kis.pz1</groupId>
+      <artifactId>model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
-
 
 </project>

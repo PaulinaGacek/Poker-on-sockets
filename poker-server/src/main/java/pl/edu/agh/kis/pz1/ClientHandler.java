@@ -16,11 +16,13 @@ public class ClientHandler implements Runnable{
     private BufferedReader bufferedReader;
     public BufferedWriter bufferedWriter;
     private String clientUsername;
-    private ArrayList<Card> cards = new ArrayList<>();
-    public int pool = 1000;
-    private boolean isTheirTurn = false;
-    public int poolInCurrentBetting = 0;
-    public boolean hasPassed = false;
+
+    public Player player = new Player();
+    //private ArrayList<Card> cards = new ArrayList<>();
+    //public int pool = 1000;
+    //private boolean isTheirTurn = false;
+    //public int poolInCurrentBetting = 0;
+    //public boolean hasPassed = false;
 
     public ClientHandler(Socket socket, Game game){
         try{
@@ -42,7 +44,7 @@ public class ClientHandler implements Runnable{
         String messageFromClient;
         while(socket.isConnected()){
             try{
-                if(isTheirTurn){
+                if(player.getIsTheirTurn()){
                     messageFromClient = bufferedReader.readLine();
                     broadcastMessageToOthers(messageFromClient);
                 }
@@ -126,22 +128,20 @@ public class ClientHandler implements Runnable{
     }
 
     public void addCard(Card card) {
-        if(cards.size()<5){
-            cards.add(card);
-        }
+        player.addCard(card);
     }
 
     public void displayCards(){
         String message = "";
-        for(Card c: cards){
+        for(Card c: player.getCards()){
             message += c.getString();
         }
         broadcastMessageToItself(message);
     }
 
     public void payAnte(int ante){
-        if(pool >= ante){
-            pool -= ante;
+        if(player.getPool() >= ante){
+            player.pay(ante);
         }
         else{
             broadcastMessageToItself("You have too little money to join this round");
@@ -149,7 +149,7 @@ public class ClientHandler implements Runnable{
     }
 
     public int getPool(){
-        return pool;
+        return player.getPool();
     }
 
     public String getClientUsername(){
@@ -157,7 +157,12 @@ public class ClientHandler implements Runnable{
     }
 
     public void setIsTheirTurn(boolean isTheirTurn){
-        this.isTheirTurn = isTheirTurn;
+        if(isTheirTurn){
+            player.setTheirTurn();
+        }
+        else{
+            player.setNotTheirTurn();
+        }
     }
 
     public int decideWhatToDo(){
