@@ -82,7 +82,7 @@ public class Game {
         if(move==WAIT){
             return poolInCurrentBetting == currentPlayer.player.getPoolInCurrentBetting();
         }else if(move==RAISE) {
-            return currentPlayer.getPool() > 0;
+            return currentPlayer.player.getPool() > 0;
         }
         return true; // PASS is always possible
     }
@@ -115,7 +115,7 @@ public class Game {
         currentPlayer.broadcastMessageToAll("\nAnte ("+ante+") was taken from your pool in order to join the game");
         for(ClientHandler player: clientHandlers){
             player.payAnte(ante);
-            player.broadcastMessageToItself("Your current pool: " + player.getPool());
+            player.broadcastMessageToItself("Your current pool: " + player.player.getPool());
         }
         updateNrOfPlayersInGameAndGameOver();
         commonPool += ante * nrOfPlayers;
@@ -132,7 +132,7 @@ public class Game {
     private void dealOutInitialCards() {
         for(int i = 0; i < 5; ++i){
             for(ClientHandler player: clientHandlers){
-                player.addCard(deck.dealOutCard());
+                player.player.addCard(deck.dealOutCard());
             }
         }
     }
@@ -187,10 +187,10 @@ public class Game {
         }
         for(int i = 0; i < nrOfPlayers; ++i){
             if(i != currentIndex) {
-                playersInGame.get(i).setIsTheirTurn(false);
+                playersInGame.get(i).player.setNotTheirTurn();
             }
             else{
-                playersInGame.get(i).setIsTheirTurn(true); // why true is never set??? - now its set
+                playersInGame.get(i).player.setTheirTurn(); // why true is never set??? - now its set
             }
         }
         currentPlayer = playersInGame.get(currentIndex);

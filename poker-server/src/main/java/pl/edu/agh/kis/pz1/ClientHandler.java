@@ -16,14 +16,7 @@ public class ClientHandler implements Runnable{
     private BufferedReader bufferedReader;
     public BufferedWriter bufferedWriter;
     private String clientUsername;
-
     public Player player = new Player();
-    //private ArrayList<Card> cards = new ArrayList<>();
-    //public int pool = 1000;
-    //private boolean isTheirTurn = false;
-    //public int poolInCurrentBetting = 0;
-    //public boolean hasPassed = false;
-
     public ClientHandler(Socket socket, Game game){
         try{
             this.socket = socket;
@@ -100,7 +93,7 @@ public class ClientHandler implements Runnable{
     }
 
     /**
-     * Method removes client from array of clients
+     * Removes client from array of clients
      */
     public void removeClientHandler(){
         Game.clientHandlers.remove(this);  //
@@ -127,10 +120,6 @@ public class ClientHandler implements Runnable{
         }
     }
 
-    public void addCard(Card card) {
-        player.addCard(card);
-    }
-
     public void displayCards(){
         String message = "";
         for(Card c: player.getCards()){
@@ -140,29 +129,13 @@ public class ClientHandler implements Runnable{
     }
 
     public void payAnte(int ante){
-        if(player.getPool() >= ante){
-            player.pay(ante);
-        }
-        else{
+        if(!player.pay(ante)){
             broadcastMessageToItself("You have too little money to join this round");
         }
     }
 
-    public int getPool(){
-        return player.getPool();
-    }
-
     public String getClientUsername(){
         return clientUsername;
-    }
-
-    public void setIsTheirTurn(boolean isTheirTurn){
-        if(isTheirTurn){
-            player.setTheirTurn();
-        }
-        else{
-            player.setNotTheirTurn();
-        }
     }
 
     public int decideWhatToDo(){
