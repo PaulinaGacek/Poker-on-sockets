@@ -11,6 +11,11 @@ public class Player {
     private boolean isTheirTurn = false;
     private int poolInCurrentBetting = 0;
     private boolean hasPassed = false;
+    private String name;
+
+    public Player(String name){
+        this.name = name;
+    }
 
     // getters
     public int getPool(){return pool;}
@@ -20,6 +25,7 @@ public class Player {
     public int getPoolInCurrentBetting() {
         return poolInCurrentBetting;
     }
+    public String getName(){return name;}
 
     // setters
     public void setHasPassed(){hasPassed = true;}

@@ -6,14 +6,11 @@ import java.util.ArrayList;
 public class Game {
     private ClientHandler currentPlayer;
     private static int nrOfPlayers = 0;
-    public static ArrayList<ClientHandler> clientHandlers;
-    public static ArrayList<ClientHandler> playersInGame = new ArrayList<>();
-    public Deck deck = new Deck(false);
-    private final int ante = 100;
-    private int commonPool = 0;
-    private int poolInCurrentBetting = 0;
+    public static ArrayList<ClientHandler> clientHandlers; // clients connected to socket
+    public static ArrayList<ClientHandler> playersInGame = new ArrayList<>(); // clients in game
+    public Tie tie = new Tie();
+    public static ArrayList<Player> players = new ArrayList<>();
     int WAIT = 1, PASS = 2, RAISE = 3;
-    public boolean isGameOver = false;
 
     public void play() throws IOException {
         updateNrOfPlayersInGameAndGameOver();
@@ -22,12 +19,12 @@ public class Game {
         currentPlayer = clientHandlers.get(0);
         collectAnte();
         dealOutInitialCards();
-        deck.displayDeck();
+        tie.getDeck().displayDeck();
         displayCards();
 
         // 1st betting
         for(int i = 0; i < 2; ++i) { //debug
-            if(!isGameOver){
+            if(!tie.isGameOver()){
                 handleBetting();
                 while (!checkIfRoundIsComplete()) {
                     handleBetting();
@@ -42,7 +39,7 @@ public class Game {
             checkIfGameOver();
             showWhoseTurn();
             currentPlayer.bufferedWriter.flush();
-            currentPlayer.broadcastMessageToItself("\nEntrance pool: "+poolInCurrentBetting+ "\n"+
+            currentPlayer.broadcastMessageToItself("\nEntrance pool: "+tie.getPoolInCurrentBetting()+ "\n"+
                     "What do you want to do?\n(1) Wait\n(2) Pass\n(3) Raise the stakes");
             int move = currentPlayer.decideWhatToDo();
             handleMove(move);
@@ -69,10 +66,9 @@ public class Game {
             currentPlayer.broadcastMessageToItself("Entrance stake you want to raise: ");
             int raise = currentPlayer.raiseStakes();
             currentPlayer.player.setPoolInCurrentBetting(
-                    currentPlayer.player.getPoolInCurrentBetting()+raise
-            );
+                    currentPlayer.player.getPoolInCurrentBetting()+raise);
             currentPlayer.player.pay(raise);
-            poolInCurrentBetting = currentPlayer.player.getPoolInCurrentBetting();
+            tie.setPoolInCurrentBetting(currentPlayer.player.getPoolInCurrentBetting());
         }else if(move==WAIT){
             currentPlayer.broadcastMessageToOthers("\n" + currentPlayer.getClientUsername()+" waits");
         }
@@ -80,7 +76,7 @@ public class Game {
 
     private boolean isMovePossible(int move){
         if(move==WAIT){
-            return poolInCurrentBetting == currentPlayer.player.getPoolInCurrentBetting();
+            return tie.getPoolInCurrentBetting() == currentPlayer.player.getPoolInCurrentBetting();
         }else if(move==RAISE) {
             return currentPlayer.player.getPool() > 0;
         }
@@ -100,11 +96,11 @@ public class Game {
             }
         }
         if (playersInGame.size()==0 || playersInGame.size()==1){
-            isGameOver = true;
+            tie.setGameOver();
             return true;
         }
         for(ClientHandler player: playersInGame){
-            if(player.player.getPoolInCurrentBetting() != poolInCurrentBetting){
+            if(player.player.getPoolInCurrentBetting() != tie.getPoolInCurrentBetting()){
                 return false;
             }
         }
@@ -112,14 +108,14 @@ public class Game {
     }
 
     private void collectAnte() {
-        currentPlayer.broadcastMessageToAll("\nAnte ("+ante+") was taken from your pool in order to join the game");
+        currentPlayer.broadcastMessageToAll("\nAnte ("+tie.getAnte()+") was taken from your pool in order to join the game");
         for(ClientHandler player: clientHandlers){
-            player.payAnte(ante);
+            player.payAnte(tie.getAnte());
             player.broadcastMessageToItself("Your current pool: " + player.player.getPool());
         }
         updateNrOfPlayersInGameAndGameOver();
-        commonPool += ante * nrOfPlayers;
-        currentPlayer.broadcastMessageToAll("Common pool: "+ commonPool);
+        tie.addToCommonPool(tie.getAnte() * nrOfPlayers);
+        currentPlayer.broadcastMessageToAll("Common pool: "+ tie.getCommonPool());
     }
 
     private void displayCards() {
@@ -132,7 +128,7 @@ public class Game {
     private void dealOutInitialCards() {
         for(int i = 0; i < 5; ++i){
             for(ClientHandler player: clientHandlers){
-                player.player.addCard(deck.dealOutCard());
+                player.player.addCard(tie.getDeck().dealOutCard());
             }
         }
     }
@@ -166,12 +162,8 @@ public class Game {
     private void updateNrOfPlayersInGameAndGameOver() {
         nrOfPlayers = playersInGame.size();
         if(nrOfPlayers==1){
-            isGameOver = true;
+            tie.setGameOver();
         }
-    }
-
-    public int getAnte(){
-        return ante;
     }
 
     // TODO
@@ -213,9 +205,17 @@ public class Game {
     }
 
     public void checkIfGameOver(){
-        if(isGameOver){
+        if(tie.isGameOver()){
             currentPlayer.broadcastMessageToAll("GAME OVER");
-            currentPlayer.broadcastMessageToAll(currentPlayer.getClientUsername()+" WON "+commonPool);
+            currentPlayer.broadcastMessageToAll(currentPlayer.getClientUsername()+" WON "+tie.getCommonPool());
         }
+    }
+
+    /**
+     * Add Player object to players array
+     * @param player player attribute of new ClientHandler
+     */
+    public void addPlayer(Player player) {
+        tie.players.add(player);
     }
 }

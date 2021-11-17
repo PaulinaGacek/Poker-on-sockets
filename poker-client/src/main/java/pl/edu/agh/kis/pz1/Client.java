@@ -1,10 +1,8 @@
 package pl.edu.agh.kis.pz1;
-
-import pl.edu.agh.kis.pz1.util.Card;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
-import java.util.ArrayList;
+
 
 public class Client {
 

@@ -15,14 +15,16 @@ public class ClientHandler implements Runnable{
     private BufferedReader bufferedReader;
     public BufferedWriter bufferedWriter;
     private String clientUsername;
-    public Player player = new Player();
+    public Player player;
     public ClientHandler(Socket socket, Game game){
         try{
             this.socket = socket;
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.clientUsername = bufferedReader.readLine();
+            this.player = new Player(this.clientUsername);
             clientHandlers.add(this);
+            game.addPlayer(this.player);
             broadcastMessageToOthers("SERVER: " + clientUsername + " has joined the game!");
             broadcastMessageToItself("Welcome to the game!");
         }
@@ -91,6 +93,7 @@ public class ClientHandler implements Runnable{
         }
     }
 
+    // TO DO - it throws exception when someone leaves game
     /**
      * Removes client from array of clients
      */

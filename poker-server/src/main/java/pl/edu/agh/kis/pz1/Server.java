@@ -17,7 +17,7 @@ public class Server {
     private void startServer(){
         try{
             Game game = new Game();
-            game.deck.displayDeck();
+            game.tie.getDeck().displayDeck();
             System.out.println("Poker server is Running...");
             while(!serverSocket.isClosed()){
                 Socket socket = serverSocket.accept(); // returns socket to specific Client

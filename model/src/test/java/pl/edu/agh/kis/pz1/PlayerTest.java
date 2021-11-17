@@ -11,7 +11,7 @@ import static junit.framework.TestCase.*;
 import static junit.framework.TestCase.assertEquals;
 
 public class PlayerTest {
-    public Player player1 = new Player();
+    public Player player1 = new Player("a");
     public static ArrayList<Card> get5CardDeck(){
         ArrayList<Card> cards = new ArrayList<>();
         cards.add(new Card(Suit.heart, Rank._2));
@@ -49,13 +49,13 @@ public class PlayerTest {
 
     @Test
     public void displayCardsTestDeckIsEmpty(){
-        Player newPlayer = new Player();
+        Player newPlayer = new Player("a");
         assertEquals(newPlayer.displayCards(), "You do not have any cards yet!");
     }
 
     @Test
     public void displayCardsTestNotEmptyDeck(){
-        Player newPlayer = new Player();
+        Player newPlayer = new Player("a");
         newPlayer.addCard(get5CardDeck().get(0));
         assertEquals(newPlayer.displayCards(),"(heart,_2) ");
         newPlayer.addCard(get5CardDeck().get(1));
@@ -71,7 +71,7 @@ public class PlayerTest {
 
     @Test
     public void swapCardsTest(){
-        Player newPlayer = new Player();
+        Player newPlayer = new Player("a");
         newPlayer.addCard(new Card(Suit.heart, Rank.J));
         newPlayer.addCard(new Card(Suit.spade, Rank._2));
         newPlayer.addCard(new Card(Suit.club, Rank._2));
