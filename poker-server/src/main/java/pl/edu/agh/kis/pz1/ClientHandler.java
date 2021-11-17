@@ -24,7 +24,7 @@ public class ClientHandler implements Runnable{
             this.clientUsername = bufferedReader.readLine();
             this.player = new Player(this.clientUsername);
             clientHandlers.add(this);
-            game.addPlayer(this.player);
+            game.tie.addPlayer(this.player);
             broadcastMessageToOthers("SERVER: " + clientUsername + " has joined the game!");
             broadcastMessageToItself("Welcome to the game!");
         }

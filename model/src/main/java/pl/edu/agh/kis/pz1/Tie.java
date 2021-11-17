@@ -13,6 +13,7 @@ public class Tie {
     Move[] moves = new Move[]{Move.WAIT, Move.PASS, Move.RAISE};
     private boolean isGameOver = false;
     public ArrayList<Player> players = new ArrayList<>();
+    // Player currentPlayer = new Player();
 
     // getters
     public Deck getDeck(){
@@ -40,5 +41,24 @@ public class Tie {
     }
     public void addToCommonPool(int input){
         commonPool += input;
+    }
+
+    // game
+
+    /**
+     * Add Player object to players array
+     * @param newPlayer player attribute of new ClientHandler
+     */
+    public void addPlayer(Player newPlayer){
+        nrOfPlayers++;
+        players.add(newPlayer);
+    }
+
+    public String displayPlayersInGame(){
+        String message = "";
+        for(int i = 0; i < players.size(); ++i){
+            message += players.get(i).getName() + ", ";
+        }
+        return message;
     }
 }
