@@ -1,6 +1,5 @@
 package pl.edu.agh.kis.pz1;
 
-import pl.edu.agh.kis.pz1.util.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -121,11 +120,7 @@ public class ClientHandler implements Runnable{
     }
 
     public void displayCards(){
-        String message = "";
-        for(Card c: player.getCards()){
-            message += c.getString();
-        }
-        broadcastMessageToItself(message);
+        broadcastMessageToItself(player.displayCards());
     }
 
     public void payAnte(int ante){

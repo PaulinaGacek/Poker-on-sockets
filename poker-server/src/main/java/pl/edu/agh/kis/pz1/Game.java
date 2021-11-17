@@ -9,7 +9,7 @@ public class Game {
     public static ArrayList<ClientHandler> clientHandlers;
     public static ArrayList<ClientHandler> playersInGame = new ArrayList<>();
     public Deck deck = new Deck(false);
-    private int ante = 100;
+    private final int ante = 100;
     private int commonPool = 0;
     private int poolInCurrentBetting = 0;
     int WAIT = 1, PASS = 2, RAISE = 3;
