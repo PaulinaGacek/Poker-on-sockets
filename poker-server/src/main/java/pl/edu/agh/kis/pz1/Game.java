@@ -18,15 +18,15 @@ public class Game {
         displayCards();
 
         // 1st betting
-        for(int i = 0; i < 2; ++i) { //debug
-            if(!tie.isGameOver()){
+        /*
+        if(!tie.isGameOver()){
+            handleBetting();
+            System.out.println("first round");
+            while (!checkIfRoundIsComplete() && !tie.isGameOver()) {
                 handleBetting();
-                System.out.println("first round");
-                while (!checkIfRoundIsComplete() && !tie.isGameOver()) {
-                    handleBetting();
-                }
             }
-        }
+        }*/
+        handleSwapping();
         System.out.println("Finish");
     }
 
@@ -216,5 +216,17 @@ public class Game {
             return true;
         }
         return false;
+    }
+
+    // swapping
+    public void handleSwapping(){
+        for(ClientHandler player: playersInGame){
+            showWhoseTurn();
+            player.broadcastMessageToItself("\nYour cards: "+ player.player.displayCards());
+            player.broadcastMessageToItself("How many of them would you like to swap? (Input number from 0 to 5)");
+            int swappedCards = player.decideWhatToSwap();
+            player.broadcastMessageToOthers(player.getClientUsername() + " swaps " + swappedCards + " cards");
+            thankUNext();
+        }
     }
 }

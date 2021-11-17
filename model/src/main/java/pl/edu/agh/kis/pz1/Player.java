@@ -11,6 +11,7 @@ public class Player {
     private boolean isTheirTurn = false;
     private int poolInCurrentBetting = 0;
     private boolean hasPassed = false;
+    private int cardsToSwap = 0;
     private String name;
 
     public Player(String name){

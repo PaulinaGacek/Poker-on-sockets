@@ -141,7 +141,7 @@ public class ClientHandler implements Runnable{
         String numberOnly = "";
         try{
             String s = bufferedReader.readLine();
-            while(!isChoiceSyntaxOk(s)){
+            while(!isChoiceSyntaxOk(s,1,3)){
                 broadcastMessageToItself("Improper syntax of your answer, input number between 1 and 3");
                 s = bufferedReader.readLine();
             }
@@ -154,12 +154,12 @@ public class ClientHandler implements Runnable{
         return option;
     }
 
-    private boolean isChoiceSyntaxOk(String answer){
+    private boolean isChoiceSyntaxOk(String answer, int lowerBound, int upperBound){ // bounds are inclusive
         String numberOnly = extractNumbersFromString(answer);
         if(numberOnly.equals(""))
             return false;
         int number = Integer.parseInt(numberOnly);
-        return number >= 1 && number <= 3;
+        return number >= lowerBound && number <= upperBound;
     }
 
     public int raiseStakes(){
@@ -167,7 +167,7 @@ public class ClientHandler implements Runnable{
         String numberOnly = "";
         try{
             String s = bufferedReader.readLine();
-            while(!isStakeSyntaxOk(s)){
+            while(!isChoiceSyntaxOk(s,1,1000000)){
                 broadcastMessageToItself("Improper syntax of your answer, input positive number");
                 s = bufferedReader.readLine();
             }
@@ -181,15 +181,26 @@ public class ClientHandler implements Runnable{
     }
 
 
-    private boolean isStakeSyntaxOk(String answer){
-        String numberOnly = extractNumbersFromString(answer);
-        if(numberOnly.equals(""))
-            return false;
-        int number = Integer.parseInt(numberOnly);
-        return number >= 0;
-    }
-
     private String extractNumbersFromString(String answer){
         return answer.replaceAll("[^0-9]", "");
+    }
+
+    // swapping
+    public int decideWhatToSwap() {
+        int option = 0;
+        String numberOnly = "";
+        try{
+            String s = bufferedReader.readLine();
+            while(!isChoiceSyntaxOk(s,0,5)){
+                broadcastMessageToItself("Improper syntax of your answer, input number between 0 and 5");
+                s = bufferedReader.readLine();
+            }
+            numberOnly = extractNumbersFromString(s);
+            option = Integer.parseInt(numberOnly);
+            System.out.println(getClientUsername()+ " chose to swap "+option+" cards");
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        return option;
     }
 }
