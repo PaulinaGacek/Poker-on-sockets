@@ -8,6 +8,13 @@ public class Card {
 
     public Card() {}
 
+    public Rank getRank() {
+        return rank;
+    }
+    public Suit getSuit() {
+        return suit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

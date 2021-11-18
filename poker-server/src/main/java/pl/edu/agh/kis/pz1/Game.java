@@ -18,14 +18,14 @@ public class Game {
         displayCards();
 
         // 1st betting
-        /*
+
         if(!tie.isGameOver()){
             handleBetting();
             System.out.println("first round");
             while (!checkIfRoundIsComplete() && !tie.isGameOver()) {
                 handleBetting();
             }
-        }*/
+        }
         handleSwapping();
         System.out.println("Finish");
     }
@@ -207,4 +207,6 @@ public class Game {
             thankUNext();
         }
     }
+
+    // judge hand
 }
