@@ -37,7 +37,7 @@ public class Deck {
     }
 
     public void displayDeck() {
-        System.out.print("Cards on deck ("+cards.size()+"):");
+        System.out.print("Cards on deck ("+cards.size()+"):\n");
         for(int i = 0; i < size; ++i){
             System.out.print("(" + (i+1) + "):");
             cards.get(i).displayCard();

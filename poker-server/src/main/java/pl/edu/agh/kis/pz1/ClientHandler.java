@@ -203,4 +203,51 @@ public class ClientHandler implements Runnable{
         }
         return option;
     }
+
+    private int chooseCardToSwap(){
+        int option = 0;
+        String numberOnly = "";
+        try{
+            String s = bufferedReader.readLine();
+            while(!isChoiceSyntaxOk(s,1,5)){
+                broadcastMessageToItself("Improper syntax of your answer, input number between 1 and 5");
+                s = bufferedReader.readLine();
+            }
+            numberOnly = extractNumbersFromString(s);
+            option = Integer.parseInt(numberOnly);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        return option;
+    }
+
+    public void swapCads(int swappedCards, Tie tie) {
+        if(swappedCards==0){
+            return;
+        }
+        if(swappedCards==5){
+            // player wants to swap all cards - no need to ask which of them
+            for(int i = 0; i < 5; ++i){
+                player.swapCard(i, tie.getDeck());
+            }
+            return;
+        }
+        int[] ifSwapped = {0,0,0,0,0};
+        String[] numbers = {"1st","2nd","3rd","4th","5th"};
+        for(int i = 0; i < swappedCards; ++i){
+            broadcastMessageToItself("Choose index of the "+ numbers[i] + " card to swap, " +
+                    "input number between 1 and 5");
+            int option = chooseCardToSwap();
+            while(ifSwapped[option-1]==1){
+                broadcastMessageToItself("Choose card which you haven't chosen");
+                option = chooseCardToSwap();
+            }
+            ifSwapped[option-1]=1;
+        }
+        for(int i = 0; i < 5; ++i){
+            if(ifSwapped[i]==1){
+                player.swapCard(i, tie.getDeck());
+            }
+        }
+    }
 }

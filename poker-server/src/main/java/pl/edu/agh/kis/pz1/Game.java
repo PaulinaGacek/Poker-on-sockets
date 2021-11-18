@@ -155,29 +155,6 @@ public class Game {
         }
     }
 
-    // TODO
-    // Here should people be deleted from list not in more higher methods
-    // Problem with loop in next rounds - it finished in bad moment
-    public void setNextPlayersTurn(){
-        int currentIndex = playersInGame.indexOf(currentPlayer);
-        if(currentIndex == playersInGame.size()-1){
-            currentIndex = 0;
-        }
-        else{
-            currentIndex++;
-        }
-        for(int i = 0; i < playersInGame.size(); ++i){
-            if(i != currentIndex) {
-                playersInGame.get(i).player.setNotTheirTurn();
-            }
-            else{
-                playersInGame.get(i).player.setTheirTurn(); // why true is never set??? - now its set
-            }
-        }
-        currentPlayer = playersInGame.get(currentIndex);
-        updatePlayersArray();
-    }
-
     public void thankUNext(){
         currentPlayer.player.setNotTheirTurn();
         int currentPlayersIndex = playersInGame.indexOf(currentPlayer);
@@ -189,8 +166,6 @@ public class Game {
             playersInGame.get(currentPlayersIndex+1).player.setTheirTurn();
             currentPlayer = playersInGame.get(currentPlayersIndex+1);
         }
-
-
     }
 
     public void showWhoseTurn(){
@@ -226,6 +201,9 @@ public class Game {
             player.broadcastMessageToItself("How many of them would you like to swap? (Input number from 0 to 5)");
             int swappedCards = player.decideWhatToSwap();
             player.broadcastMessageToOthers(player.getClientUsername() + " swaps " + swappedCards + " cards");
+            player.swapCads(swappedCards, tie);
+            player.broadcastMessageToItself("\nYour cards: "+ player.player.displayCards());
+            tie.getDeck().displayDeck();
             thankUNext();
         }
     }
