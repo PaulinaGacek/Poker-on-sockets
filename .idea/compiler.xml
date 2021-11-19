@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="main" />
         <module name="poker-client" />
+        <module name="model" />
         <module name="poker-server" />
         <module name="utils" />
       </profile>

@@ -1,5 +1,4 @@
 package pl.edu.agh.kis.pz1;
-import org.junit.Test;
 import pl.edu.agh.kis.pz1.util.Card;
 import pl.edu.agh.kis.pz1.util.Deck;
 import pl.edu.agh.kis.pz1.util.Rank;
@@ -7,8 +6,8 @@ import pl.edu.agh.kis.pz1.util.Suit;
 
 import java.util.ArrayList;
 
-import static junit.framework.TestCase.*;
-import static junit.framework.TestCase.assertEquals;
+import static junit.framework.Assert.*;
+import org.testng.annotations.Test;
 
 public class PlayerTest {
     public Player player1 = new Player("a");
@@ -64,7 +63,7 @@ public class PlayerTest {
 
     @Test
     public void swapCardsTestImproperIndex(){
-        Deck sortedDeck = new Deck();
+        //Deck sortedDeck = new Deck();
         //assertFalse(player1.swapCard(-1,sortedDeck));
         //assertFalse(player1.swapCard(player1.getCards().size(),sortedDeck));
     }

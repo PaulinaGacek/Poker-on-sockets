@@ -1,6 +1,7 @@
 package pl.edu.agh.kis.pz1;
 
 import pl.edu.agh.kis.pz1.util.Card;
+import pl.edu.agh.kis.pz1.util.Combination;
 import pl.edu.agh.kis.pz1.util.Deck;
 
 import java.util.ArrayList;
@@ -81,5 +82,10 @@ public class Player {
         }
         cards.set(index,deck.dealOutCard());
         return true;
+    }
+
+    public Combination getCombination(){
+        Hand hand = new Hand();
+        return hand.findCombinationInCards(getCards());
     }
 }

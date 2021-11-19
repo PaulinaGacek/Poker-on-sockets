@@ -1,5 +1,7 @@
 package pl.edu.agh.kis.pz1;
 
+import pl.edu.agh.kis.pz1.util.Card;
+
 import java.io.IOException;
 import java.util.ArrayList;
 public class Game {
@@ -27,8 +29,10 @@ public class Game {
             }
         }
         handleSwapping();
+        handleRevealingHands();
         System.out.println("Finish");
     }
+
 
     private void handleBetting() throws IOException {
         for(int i = 0; i < playersInGame.size(); ++i){
@@ -209,4 +213,16 @@ public class Game {
     }
 
     // judge hand
+    public void handleRevealingHands() {
+        ArrayList<ArrayList<Card>> playersCards = new ArrayList<>();
+        for(ClientHandler player: playersInGame){
+            player.broadcastMessageToOthers(player.getClientUsername()+"'s cards: "+
+                    player.player.displayCards());
+            playersCards.add(player.player.getCards());
+        }
+        Hand hand = new Hand();
+        int winnerIndex = hand.indexWhoWins(playersCards);
+        playersInGame.get(0).broadcastMessageToAll(playersInGame.get(winnerIndex).getClientUsername() +
+                " wins - "+ playersInGame.get(winnerIndex).player.getCombination());
+    }
 }

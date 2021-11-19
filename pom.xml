@@ -7,6 +7,18 @@
 
   <name>Pom macierzysty</name>
   <packaging>pom</packaging>
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <sonar.organization>paulinagacek</sonar.organization>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+            </properties>
+        </profile>
+    </profiles>
 
   <!-- Dodane przez pskrzynski -->
   <properties>
@@ -18,6 +30,8 @@
       <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
       <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
       <sonar.language>java</sonar.language>
+      <!-- JaCoCo Properties -->
+      <jacoco.version>0.8.6</jacoco.version>
   </properties>
 
   <modules>
@@ -50,6 +64,11 @@
               <groupId>pl.edu.agh.kis.pz1</groupId>
               <artifactId>model</artifactId>
               <version>${project.version}</version>
+          </dependency>
+          <dependency>
+              <groupId>org.jacoco</groupId>
+              <artifactId>jacoco-maven-plugin</artifactId>
+              <version>0.8.7</version>
           </dependency>
 
       </dependencies>
@@ -90,9 +109,27 @@
                         </execution>
                     </executions>
                 </plugin>
-
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.7</version>
+                    <executions>
+                        <execution>
+                            <id>jacoco-initialize</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>jacoco-site</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
-
 </project>

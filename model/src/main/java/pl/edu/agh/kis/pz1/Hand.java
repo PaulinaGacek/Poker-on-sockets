@@ -11,26 +11,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Hand {
-    private static Map<Combination, Integer> combinationRanking = new TreeMap<>();
-    private static Map<Rank, Integer> rankRanking = new TreeMap<Rank, Integer>();
-    private static Combination[] combinations = {
-            Combination.RoyalFlush,     // A,K,Q,J,10 in the same suit
-            Combination.StraightFlush,  // sequence in the same suit
-            Combination.FourOfTheKind,
-            Combination.FullHouse,      // 3 *(Rank1) + 2*(Rank2)
-            Combination.Flush,          // 5 cards of the same suit
-            Combination.Straight,       // sequence of cards in random suits
-            Combination.ThreeOfTheKind,
-            Combination.TwoPairs,
-            Combination.OnePair,
-            Combination.NoPair
-    };
-    private static ArrayList<Rank> rankArray = new ArrayList<>(
+    private static final Map<Combination, Integer> combinationRanking = new TreeMap<>();
+    private static final Map<Rank, Integer> rankRanking = new TreeMap<>();
+    private static final ArrayList<Rank> rankArray = new ArrayList<>(
             Arrays.asList(Rank._2,Rank._3,Rank._4,Rank._5,Rank._6,Rank._7,
                     Rank._8,Rank._9,Rank._10, Rank.J, Rank.Q, Rank.K, Rank.A)
     );
 
-    private static ArrayList<Suit> suitArray = new ArrayList<>(
+    private static final ArrayList<Suit> suitArray = new ArrayList<>(
             Arrays.asList(Suit.club, Suit.diamond, Suit.heart, Suit.spade)
     );
 
@@ -68,21 +56,47 @@ public class Hand {
         combinationRanking.put(Combination.NoPair,1);
     }
 
+    public int indexWhoWins(ArrayList<ArrayList<Card>> playersCards){
+        int index = 0;
+        Combination combination = findCombinationInCards(playersCards.get(0));
+        int highestScore = mapHandToPoints(combination, getHighestRank(playersCards.get(0)));
+        for(int i = 1; i < playersCards.size(); ++i){
+            combination = findCombinationInCards(playersCards.get(i));
+            if(highestScore < mapHandToPoints(combination, getHighestRank(playersCards.get(i)))){
+                highestScore = mapHandToPoints(combination, getHighestRank(playersCards.get(i)));
+                index = i;
+            }
+        }
+        return index;
+    }
     /**
      * The highest card is important only when there is a tie, it means that
      * higher card cannot be more important than the value of combination,
      * that's why combinations points are multiplied by 15
      * @param combination scored combination of cards on hand
-     * @param highestCard cards with the highest rank
+     * @param highestRank cards with the highest rank
      * @return point for cards on hand
      */
-    public int mapHandToPoints(Combination combination, Card highestCard){
+    public int mapHandToPoints(Combination combination, Rank highestRank){
         int combinationPoints = combinationRanking.get(combination) * 15;
-        int rankPoints = rankRanking.get(highestCard.getRank());
+        int rankPoints = rankRanking.get(highestRank);
         return rankPoints + combinationPoints;
     }
 
-    public Combination findCombinationInCards(ArrayList<Card> cards){ // not finished
+    public Rank getHighestRank(ArrayList<Card> cards){
+        int[] playersRanks = {0,0,0,0,0,0,0,0,0,0,0,0,0};
+        for(Card card: cards){
+            playersRanks[rankArray.indexOf(card.getRank())]++;
+        }
+        for(int i = 12; i >= 0; --i){
+            if(playersRanks[i]>0){
+                return rankArray.get(i);
+            }
+        }
+        return rankArray.get(0);
+    }
+
+    public Combination findCombinationInCards(ArrayList<Card> cards){
         if(cards.size()!=5){
             throw new RuntimeException();
         }
@@ -92,21 +106,13 @@ public class Hand {
             playersSuits[suitArray.indexOf(card.getSuit())]++;
             playersRanks[rankArray.indexOf(card.getRank())]++;
         }
-        /*System.out.println("Ranks:");
-        for(int i = 0; i < 13; ++i){
-            System.out.println(rankArray.get(i) + " "+playersRanks[i]);
-        }
-        System.out.println("\nSuits:");
-        for(int i = 0; i < 4; ++i){
-            System.out.println(suitArray.get(i) + " "+playersSuits[i]);
-        }*/
         if(checkRoyalFlush(playersRanks,playersSuits))
             return Combination.RoyalFlush;
         if(checkStraightFlush(playersRanks,playersSuits))
             return Combination.StraightFlush;
         if(getMaxOfTheKind(playersRanks)==4)
             return Combination.FourOfTheKind;
-        if(checkSFull(playersRanks,playersSuits))
+        if(checkSFull(playersRanks))
             return Combination.FullHouse;
         if(checkFlush(playersSuits))
             return Combination.Flush;
@@ -133,7 +139,7 @@ public class Hand {
         return false;
     }
 
-    private boolean checkSFull(int[] playersRanks, int[] playersSuits) {
+    private boolean checkSFull(int[] playersRanks) {
         for(int i = 0; i < 13; ++i) {
             if (playersRanks[i] > 0 && playersRanks[i] != 2 && playersRanks[i] !=3) {
                 return false;
@@ -183,10 +189,7 @@ public class Hand {
         if(!checkFlush(playersSuits)){
             return false;
         }
-        if(!checkStraight(playersRanks)){
-            return false;
-        }
-        return true;
+        return checkStraight(playersRanks);
     }
 
     private boolean checkRoyalFlush(int[] playersRanks, int[] playersSuits) {
