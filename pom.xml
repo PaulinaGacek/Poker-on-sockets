@@ -24,7 +24,6 @@
       <module>model</module>
   </modules>
 
-
   <dependencyManagement>
       <dependencies>
           <dependency>
@@ -49,6 +48,7 @@
           </dependency>
       </dependencies>
   </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -84,7 +84,6 @@
             </plugins>
         </pluginManagement>
     </build>
-
     <profiles>
         <profile>
             <id>coverage</id>
