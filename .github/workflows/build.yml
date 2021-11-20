@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - new_file_structure
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
