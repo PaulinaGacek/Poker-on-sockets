@@ -5,12 +5,10 @@ import java.util.Random;
 public class Deck {
     private int size = 52;
     private final Random rand = new Random();
-    private boolean isSorted = false;
-    private boolean isInitialized = false;
     private static final Suit[] suitArray = {Suit.club, Suit.diamond, Suit.heart,Suit.spade};
     private static final Rank[] rankArray = {Rank._2, Rank._3, Rank._4, Rank._5, Rank._6,Rank._7,
             Rank._8, Rank._9, Rank._10, Rank.J, Rank.Q, Rank.K, Rank.A};
-    private static ArrayList<Card> cards = new ArrayList<>();;
+    private ArrayList<Card> cards = new ArrayList<>();
 
     private void initializeSortedDeck() {
         for(int i = 0; i < 4; ++i) {
@@ -19,13 +17,11 @@ public class Deck {
                 cards.add(newCard);
             }
         }
-        isInitialized = true;
-        isSorted = true;
     }
 
     private void shuffle() {
-        int MAX_NR_OF_SHUFFLES = 10;
-        int nrOfShuffles = rand.nextInt(MAX_NR_OF_SHUFFLES);
+        int maxNrOfShuffles = 10;
+        int nrOfShuffles = rand.nextInt(maxNrOfShuffles);
         for(int i = 0; i < nrOfShuffles; ++i) {
             for(int j = 0; j < size; ++j) {
                 Card temp = cards.get(i);
