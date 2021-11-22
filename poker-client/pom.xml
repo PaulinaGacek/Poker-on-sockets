@@ -11,14 +11,44 @@
   <artifactId>poker-client</artifactId>
   <name>CLIENT</name>
 
-  <!-- Dodane przez pskrzynski -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
   </properties>
 
+
+  <profiles>
+    <profile>
+      <id>attributed</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>jacoco-initialize</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>jacoco-site</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <build>
     <plugins>
@@ -30,7 +60,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.3.0</version> <!-- podbita wersja z 2.6 na 3.3.0 by pskrzynski -->
+        <version>3.3.0</version>
         <configuration>
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -43,7 +73,7 @@
         </configuration>
         <executions>
           <execution>
-            <phase>package</phase> 
+            <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
@@ -62,9 +92,8 @@
         </executions>
       </plugin>
     </plugins>
-  </build> 
+  </build>
 
-  <!-- najświeższa wersja w otwartym repo maven to 4.13.2 -->
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -72,6 +101,7 @@
       <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
         <groupId>pl.edu.agh.kis.pz1</groupId>
         <artifactId>utils</artifactId>
