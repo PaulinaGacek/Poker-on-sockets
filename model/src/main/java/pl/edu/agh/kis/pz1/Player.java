@@ -12,7 +12,6 @@ public class Player {
     private boolean isTheirTurn = false;
     private int poolInCurrentBetting = 0;
     private boolean hasPassed = false;
-    private int cardsToSwap = 0;
     private String name;
 
     public Player(String name){
@@ -77,7 +76,7 @@ public class Player {
      * @return true is operation was successful
      */
     public boolean swapCard(int index, Deck deck){
-        if(index< 0 || index > cards.size()){
+        if(index < 0 || index > cards.size()){
             return false;
         }
         cards.set(index,deck.dealOutCard());

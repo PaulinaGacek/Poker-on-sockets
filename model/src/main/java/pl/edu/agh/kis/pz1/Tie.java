@@ -5,7 +5,7 @@ import pl.edu.agh.kis.pz1.util.Move;
 import java.util.ArrayList;
 
 public class Tie {
-    private static int nrOfPlayers = 0;
+    private int nrOfPlayers = 0;
     private Deck deck = new Deck(false);
     private final int ante = 100;
     private int commonPool = 0;
@@ -13,7 +13,6 @@ public class Tie {
     Move[] moves = new Move[]{Move.WAIT, Move.PASS, Move.RAISE};
     private boolean isGameOver = false;
     public ArrayList<Player> players = new ArrayList<>();
-    // Player currentPlayer = new Player();
 
     // getters
     public Deck getDeck(){
@@ -40,7 +39,9 @@ public class Tie {
         poolInCurrentBetting = newPool;
     }
     public void addToCommonPool(int input){
-        commonPool += input;
+        if(input > 0){
+            commonPool += input;
+        }
     }
 
     // game

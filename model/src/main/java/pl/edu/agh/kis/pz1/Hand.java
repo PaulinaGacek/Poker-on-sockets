@@ -7,6 +7,7 @@ import pl.edu.agh.kis.pz1.util.Suit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -96,10 +97,7 @@ public class Hand {
         return rankArray.get(0);
     }
 
-    public Combination findCombinationInCards(ArrayList<Card> cards){
-        if(cards.size()!=5){
-            throw new RuntimeException();
-        }
+    public Combination findCombinationInCards(List<Card> cards){
         int[] playersRanks = {0,0,0,0,0,0,0,0,0,0,0,0,0};
         int[] playersSuits = {0,0,0,0};
         for(Card card: cards){

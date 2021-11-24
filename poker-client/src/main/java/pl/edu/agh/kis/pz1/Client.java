@@ -23,7 +23,11 @@ public class Client {
         }
     }
 
-    public void sendMessage(){
+    public String getUserName(){
+        return userName;
+    }
+
+    private void sendMessage(){
         try{
             bufferedWriter.write(userName);
             bufferedWriter.newLine();
@@ -41,7 +45,7 @@ public class Client {
         }
     }
 
-    public void listenForMessage() {
+    private void listenForMessage() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -58,7 +62,7 @@ public class Client {
         }).start();
     }
 
-    public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
+    private void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
         try{
             if(bufferedReader != null) {
                 bufferedReader.close();

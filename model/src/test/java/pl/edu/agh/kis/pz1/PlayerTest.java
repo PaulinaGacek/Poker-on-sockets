@@ -1,13 +1,12 @@
 package pl.edu.agh.kis.pz1;
-import pl.edu.agh.kis.pz1.util.Card;
-import pl.edu.agh.kis.pz1.util.Deck;
-import pl.edu.agh.kis.pz1.util.Rank;
-import pl.edu.agh.kis.pz1.util.Suit;
+import pl.edu.agh.kis.pz1.util.*;
 
 import java.util.ArrayList;
 
 import static junit.framework.Assert.*;
 import org.testng.annotations.Test;
+
+// 84% coverage
 
 public class PlayerTest {
     public Player player1 = new Player("a");
@@ -20,6 +19,7 @@ public class PlayerTest {
         cards.add(new Card(Suit.club, Rank._6));
         return cards;
     }
+
     @Test
     public void payTest(){
         int pool = player1.getPool();
@@ -63,9 +63,10 @@ public class PlayerTest {
 
     @Test
     public void swapCardsTestImproperIndex(){
-        //Deck sortedDeck = new Deck();
-        //assertFalse(player1.swapCard(-1,sortedDeck));
-        //assertFalse(player1.swapCard(player1.getCards().size(),sortedDeck));
+        Deck sortedDeck = new Deck();
+        Player player2 = new Player("a");
+        assertFalse(player2.swapCard(-1,sortedDeck));
+        assertFalse(player2.swapCard(100,sortedDeck));
     }
 
     @Test
@@ -84,6 +85,25 @@ public class PlayerTest {
         for(int i = 1; i < cardsBeforeSwap.size(); ++i){
             assertEquals(newPlayer.getCards().get(i), cardsBeforeSwap.get(i));
         }
-        //assertTrue(topCard.equals(newPlayer.getCards().get(0)));
+    }
+    @Test
+    public void getCombinationTest(){
+        Player newPlayer = new Player("b");
+        newPlayer.addCard(new Card(Suit.heart, Rank.J));
+        newPlayer.addCard(new Card(Suit.spade, Rank._2));
+        newPlayer.addCard(new Card(Suit.club, Rank._2));
+        newPlayer.addCard(new Card(Suit.club, Rank.Q));
+        newPlayer.addCard(new Card(Suit.club, Rank.A));
+        Combination combination = newPlayer.getCombination();
+    }
+
+    @Test
+    public void changingTurns(){
+        Player newPlayer = new Player("c");
+        assertFalse(newPlayer.getIsTheirTurn());
+        newPlayer.setTheirTurn();
+        assertTrue(newPlayer.getIsTheirTurn());
+        newPlayer.setNotTheirTurn();
+        assertFalse(newPlayer.getIsTheirTurn());
     }
 }

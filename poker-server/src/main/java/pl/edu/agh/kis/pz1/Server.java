@@ -2,6 +2,7 @@ package pl.edu.agh.kis.pz1;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Server {
     private final ServerSocket serverSocket; // responsible for handling communication
@@ -10,18 +11,19 @@ public class Server {
     public Server(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
     }
+    public static int requiredPlayers = 0;
 
     /**
      * Keeps server running while server socket is not closed
      */
-    private void startServer(){
+    private void startServer(int requiredNrOfPlayers){
         try{
             Game game = new Game();
             game.tie.getDeck().displayDeck();
             System.out.println("Poker server is Running...");
             while(!serverSocket.isClosed()){
                 Socket socket = serverSocket.accept(); // returns socket to specific Client
-                if(nrOfPlayers < 3){
+                if(nrOfPlayers < requiredNrOfPlayers){
                     ClientHandler clientHandler = new ClientHandler(socket, game);
                     System.out.println("A new player has joined the game!");
                     updateNrOfPlayers();
@@ -29,7 +31,7 @@ public class Server {
                     waitForMorePlayers(clientHandler);
                     Thread thread = new Thread(clientHandler);
                     thread.start();
-                    if(nrOfPlayers==3){
+                    if(nrOfPlayers==requiredNrOfPlayers){
                         game.play();
                     }
                 }
@@ -58,7 +60,10 @@ public class Server {
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(1234);
         Server server = new Server(serverSocket);
-        server.startServer();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter nr of players: ");
+        requiredPlayers = scanner.nextInt();
+        server.startServer(requiredPlayers);
     }
 
     //game
@@ -67,9 +72,9 @@ public class Server {
         nrOfPlayers = ClientHandler.clientHandlers.size();
     }
     private void waitForMorePlayers(ClientHandler clientHandler) {
-        if(nrOfPlayers<3)
-            clientHandler.broadcastMessageToAll("We are still waiting for " + (3-nrOfPlayers)+ " players...");
-        else if(nrOfPlayers==3)
+        if(nrOfPlayers<requiredPlayers)
+            clientHandler.broadcastMessageToAll("We are still waiting for " + (requiredPlayers-nrOfPlayers)+ " players...");
+        else if(nrOfPlayers==requiredPlayers)
             clientHandler.broadcastMessageToAll("All players joined, lets start the game!");
     }
 }

@@ -11,17 +11,21 @@ import pl.edu.agh.kis.pz1.util.Suit;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+// 98% coverage
+
 public class HandTest {
     Combination combinationFlush = Combination.Flush;
     Combination combinationFullHouse = Combination.FullHouse;
     Combination combinationFourOfKind = Combination.FourOfTheKind;
     Card heart2 = new Card(Suit.heart, Rank._2);
     Card heart3 = new Card(Suit.heart, Rank._3);
+    Card heart9 = new Card(Suit.heart, Rank._9);
     Card heart10 = new Card(Suit.heart, Rank._10);
     Card heartJ = new Card(Suit.heart, Rank.J);
     Card heartQ = new Card(Suit.heart, Rank.Q);
     Card heartK = new Card(Suit.heart, Rank.K);
     Card heartA = new Card(Suit.heart, Rank.A);
+    Card diamondA = new Card(Suit.diamond, Rank.A);
     Card clubQ = new Card(Suit.club, Rank.Q);
     Card clubA = new Card(Suit.club, Rank.A);
     Card spadeA = new Card(Suit.spade, Rank.A);
@@ -39,6 +43,22 @@ public class HandTest {
     @Test
     public void findCombinationTest(){
         Hand hand = new Hand();
+        // Royal Flush
+        ArrayList<Card> cardsRoyalFlush = new ArrayList<>(
+                Arrays.asList(heartJ, heartQ, heartA, heart10, heartK)
+        );
+        assertEquals(hand.findCombinationInCards(cardsRoyalFlush), Combination.RoyalFlush);
+        // Straight flush
+        ArrayList<Card> cardsStraightFlush = new ArrayList<>(
+                Arrays.asList(heartJ, heartQ, heart9, heart10, heartK)
+        );
+        assertEquals(hand.findCombinationInCards(cardsStraightFlush), Combination.StraightFlush);
+        // Four of the kind
+        ArrayList<Card> cards4ofTheKind = new ArrayList<>(
+                Arrays.asList(heartA, diamondA, spadeA, clubA, heartK)
+        );
+        assertEquals(hand.findCombinationInCards(cards4ofTheKind), Combination.FourOfTheKind);
+
         // Full
         ArrayList<Card> cardsFullHand = new ArrayList<>(
                 Arrays.asList(spadeA, heartQ, heartA, clubA, clubQ)
@@ -50,6 +70,18 @@ public class HandTest {
                 Arrays.asList(spadeA, heartQ, heart2, clubA, clubQ)
         );
         assertEquals(hand.findCombinationInCards(cardsTwoPairs), Combination.TwoPairs);
+
+        // One pair
+        ArrayList<Card> cardsOnePair = new ArrayList<>(
+                Arrays.asList(spadeA, heart3, heart2, clubA, clubQ)
+        );
+        assertEquals(hand.findCombinationInCards(cardsOnePair), Combination.OnePair);
+
+        // No pair
+        ArrayList<Card> cardsNoPair = new ArrayList<>(
+                Arrays.asList(heartK, heart3, heart2, clubA, clubQ)
+        );
+        assertEquals(hand.findCombinationInCards(cardsNoPair), Combination.NoPair);
 
         // Three
         ArrayList<Card> cardsThreeOfTheKind= new ArrayList<>(

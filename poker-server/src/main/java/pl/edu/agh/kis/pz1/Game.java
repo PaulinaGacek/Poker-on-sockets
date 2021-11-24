@@ -99,7 +99,7 @@ public class Game {
                 playersInGame.remove(playersInGame.get(i));
             }
         }
-        if (playersInGame.size()==0 || playersInGame.size()==1){
+        if (playersInGame.isEmpty() || playersInGame.size()==1){
             tie.setGameOver();
             return true;
         }
@@ -117,7 +117,6 @@ public class Game {
             player.payAnte(tie.getAnte());
             player.broadcastMessageToItself("Your current pool: " + player.player.getPool());
         }
-        //updateNrOfPlayersInGameAndGameOver();
         tie.addToCommonPool(tie.getAnte() * playersInGame.size());
         currentPlayer.broadcastMessageToAll("Common pool: "+ tie.getCommonPool());
     }
@@ -150,11 +149,7 @@ public class Game {
                 break;
             }
         }
-        if(indexToRemove!=-1){
-            int previousPlayerIndex = indexToRemove - 1;
-            if(previousPlayerIndex==-1){ // player who passed was first
-                previousPlayerIndex = playersInGame.size()-2;
-            }
+        if(indexToRemove!=-1){ // deletion wihch may cause changes in queue
             playersInGame.remove(indexToRemove);
         }
     }
