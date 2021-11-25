@@ -20,7 +20,6 @@ public class Game {
         displayCards();
 
         // 1st betting
-
         if(!tie.isGameOver()){
             handleBetting();
             System.out.println("first round");
@@ -28,7 +27,11 @@ public class Game {
                 handleBetting();
             }
         }
+        // swapping
         handleSwapping();
+        //second betting
+
+        //judging
         handleRevealingHands();
         System.out.println("Finish");
     }
@@ -173,11 +176,11 @@ public class Game {
     }
 
     private String displayPlayersInGame(){
-        String message = "Players in game: ";
+        StringBuilder message = new StringBuilder("Players in game: ");
         for(ClientHandler player: playersInGame){
-            message += player.getClientUsername() + ", ";
+            message.append(player.getClientUsername()).append(", ");
         }
-        return message;
+        return message.toString();
     }
 
     public boolean checkIfGameOver(){
@@ -218,6 +221,7 @@ public class Game {
         Hand hand = new Hand();
         int winnerIndex = hand.indexWhoWins(playersCards);
         playersInGame.get(0).broadcastMessageToAll(playersInGame.get(winnerIndex).getClientUsername() +
-                " wins - "+ playersInGame.get(winnerIndex).player.getCombination());
+                " wins - "+ playersInGame.get(winnerIndex).player.getCombination() + ", highest card: "+
+                playersInGame.get(winnerIndex).player.getHighestRank());
     }
 }

@@ -106,4 +106,15 @@ public class PlayerTest {
         newPlayer.setNotTheirTurn();
         assertFalse(newPlayer.getIsTheirTurn());
     }
+
+    @Test
+    public void getHighestRankTest(){
+        Player newPlayer = new Player("b");
+        newPlayer.addCard(new Card(Suit.heart, Rank.J));
+        newPlayer.addCard(new Card(Suit.spade, Rank._2));
+        newPlayer.addCard(new Card(Suit.club, Rank._2));
+        newPlayer.addCard(new Card(Suit.club, Rank.Q));
+        newPlayer.addCard(new Card(Suit.club, Rank.A));
+        assertEquals(Rank.A, newPlayer.getHighestRank());
+    }
 }
