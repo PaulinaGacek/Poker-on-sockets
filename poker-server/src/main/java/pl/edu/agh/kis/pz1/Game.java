@@ -20,17 +20,14 @@ public class Game {
         displayCards();
 
         // 1st betting
-        for(int i = 0; i < 3; ++i){
-            if(!tie.isGameOver()){
+        if(!tie.isGameOver()){
+            handleBetting();
+            while (!checkIfRoundIsComplete() && !tie.isGameOver()) {
                 handleBetting();
-                while (!checkIfRoundIsComplete() && !tie.isGameOver()) {
-                    handleBetting();
-                }
-                //tie.setPoolInCurrentBetting(0); // zero pool in curent betting
-                tie.prepareForNextBetting();
             }
-            currentPlayer.broadcastMessageToAll("Betting round finished");
+            tie.prepareForNextBetting();
         }
+        currentPlayer.broadcastMessageToAll("Betting round finished");
 
         // swapping
         //handleSwapping();
@@ -69,7 +66,6 @@ public class Game {
                 break;
             }
         }
-        currentPlayer.broadcastMessageToAll("------- betting round finished --------");
     }
 
     private void handleRaisingStakes(){
@@ -257,6 +253,11 @@ public class Game {
                     "and "+ playersInGame.get(indexSecondWinner).getClientUsername()+" win - "+ playersInGame.get(winnerIndex).player.getCombination()
                     + ", highest card: "+ playersInGame.get(winnerIndex).player.getHighestRank());
         }
+    }
 
+    public void restartGame() {
+        clientHandlers.clear();
+        playersInGame.clear();
+        tie.restart();
     }
 }

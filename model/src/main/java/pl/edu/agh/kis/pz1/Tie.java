@@ -7,7 +7,6 @@ import java.util.ArrayList;
 public class Tie {
     private int nrOfPlayers = 0;
     private Deck deck = new Deck(false);
-    private final int ante = 100;
     private int commonPool = 0;
     private int poolInCurrentBetting = 0;
     Move[] moves = new Move[]{Move.WAIT, Move.PASS, Move.RAISE};
@@ -22,6 +21,7 @@ public class Tie {
         return isGameOver;
     }
     public int getAnte(){
+        int ante = 100;
         return ante;
     }
     public int getCommonPool(){
@@ -68,5 +68,13 @@ public class Tie {
         for(Player player: players){
             player.setPoolInCurrentBetting(0);
         }
+    }
+
+    public void restart() {
+        commonPool = 0;
+        poolInCurrentBetting = 0;
+        players.clear();
+        deck = new Deck(false);
+        isGameOver = false;
     }
 }
