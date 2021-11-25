@@ -20,14 +20,18 @@ public class Game {
         displayCards();
 
         // 1st betting
-        if(!tie.isGameOver()){
-            handleBetting();
-            System.out.println("first round");
-            while (!checkIfRoundIsComplete() && !tie.isGameOver()) {
+        for(int i = 0; i < 3; ++i){
+            if(!tie.isGameOver()){
                 handleBetting();
+                while (!checkIfRoundIsComplete() && !tie.isGameOver()) {
+                    handleBetting();
+                }
+                //tie.setPoolInCurrentBetting(0); // zero pool in curent betting
+                tie.prepareForNextBetting();
             }
-            tie.setPoolInCurrentBetting(0); // zero pool in curent betting
+            currentPlayer.broadcastMessageToAll("Betting round finished");
         }
+
         // swapping
         //handleSwapping();
         //second betting
@@ -43,7 +47,8 @@ public class Game {
             checkIfGameOver();
             showWhoseTurn();
             currentPlayer.bufferedWriter.flush();
-            currentPlayer.broadcastMessageToItself("\nEntrance pool: "+tie.getPoolInCurrentBetting()+ "\n"
+            currentPlayer.broadcastMessageToItself("\nCommon pool" + tie.getCommonPool() +
+                    "\nEntrance pool: "+tie.getPoolInCurrentBetting()+ "\n"
                     + "You have already raised: "+ currentPlayer.player.getPoolInCurrentBetting()+"\n"+
                     "What do you want to do?\n(1) Wait\n(2) Pass\n(3) Raise the stakes");
 

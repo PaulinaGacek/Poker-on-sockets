@@ -62,4 +62,11 @@ public class Tie {
         }
         return message;
     }
+
+    public void prepareForNextBetting() {
+        poolInCurrentBetting = 0;
+        for(Player player: players){
+            player.setPoolInCurrentBetting(0);
+        }
+    }
 }
