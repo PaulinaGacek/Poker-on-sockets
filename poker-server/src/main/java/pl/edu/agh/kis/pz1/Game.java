@@ -26,13 +26,14 @@ public class Game {
             while (!checkIfRoundIsComplete() && !tie.isGameOver()) {
                 handleBetting();
             }
+            tie.setPoolInCurrentBetting(0); // zero pool in curent betting
         }
         // swapping
-        handleSwapping();
+        //handleSwapping();
         //second betting
 
         //judging
-        handleRevealingHands();
+        //handleRevealingHands();
         System.out.println("Finish");
     }
 
@@ -42,7 +43,8 @@ public class Game {
             checkIfGameOver();
             showWhoseTurn();
             currentPlayer.bufferedWriter.flush();
-            currentPlayer.broadcastMessageToItself("\nEntrance pool: "+tie.getPoolInCurrentBetting()+ "\n"+
+            currentPlayer.broadcastMessageToItself("\nEntrance pool: "+tie.getPoolInCurrentBetting()+ "\n"
+                    + "You have already raised: "+ currentPlayer.player.getPoolInCurrentBetting()+"\n"+
                     "What do you want to do?\n(1) Wait\n(2) Pass\n(3) Raise the stakes");
 
             int move = currentPlayer.decideWhatToDo();
@@ -65,17 +67,35 @@ public class Game {
         currentPlayer.broadcastMessageToAll("------- betting round finished --------");
     }
 
+    private void handleRaisingStakes(){
+        currentPlayer.broadcastMessageToItself("Enter stake you want to raise: ");
+        int raise = currentPlayer.raiseStakes();
+        while(raise < tie.getPoolInCurrentBetting()- currentPlayer.player.getPoolInCurrentBetting()
+            || raise > currentPlayer.player.getPool()){
+            if(raise < tie.getPoolInCurrentBetting()- currentPlayer.player.getPoolInCurrentBetting()){
+                currentPlayer.broadcastMessageToItself("You have to raise at least " +
+                        (tie.getPoolInCurrentBetting() - currentPlayer.player.getPoolInCurrentBetting()));
+            }else{
+                currentPlayer.broadcastMessageToItself("You do not have enough money to do so");
+            }
+            currentPlayer.broadcastMessageToItself("Enter stake you want to raise: ");
+            raise = currentPlayer.raiseStakes();
+        }
+        currentPlayer.player.setPoolInCurrentBetting(
+                currentPlayer.player.getPoolInCurrentBetting()+raise);
+        currentPlayer.player.pay(raise);
+        tie.setPoolInCurrentBetting(currentPlayer.player.getPoolInCurrentBetting());
+        currentPlayer.broadcastMessageToItself("Your current pool: " + currentPlayer.player.getPool());
+        tie.addToCommonPool(raise);
+        currentPlayer.broadcastMessageToAll("Common pool: "+ tie.getCommonPool());
+    }
+
     private void handleMove(int move) {
         if(move==PASS){
             currentPlayer.player.setHasPassed();
             currentPlayer.broadcastMessageToOthers(currentPlayer.getClientUsername()+" passed");
         }else if(move==RAISE){
-            currentPlayer.broadcastMessageToItself("Entrance stake you want to raise: ");
-            int raise = currentPlayer.raiseStakes();
-            currentPlayer.player.setPoolInCurrentBetting(
-                    currentPlayer.player.getPoolInCurrentBetting()+raise);
-            currentPlayer.player.pay(raise);
-            tie.setPoolInCurrentBetting(currentPlayer.player.getPoolInCurrentBetting());
+            handleRaisingStakes();
         }else if(move==WAIT){
             currentPlayer.broadcastMessageToOthers("\n" + currentPlayer.getClientUsername()+" waits");
         }
@@ -220,8 +240,18 @@ public class Game {
         }
         Hand hand = new Hand();
         int winnerIndex = hand.indexWhoWins(playersCards);
-        playersInGame.get(0).broadcastMessageToAll(playersInGame.get(winnerIndex).getClientUsername() +
-                " wins - "+ playersInGame.get(winnerIndex).player.getCombination() + ", highest card: "+
-                playersInGame.get(winnerIndex).player.getHighestRank());
+        if(hand.isOnlyOneWinner(playersCards)){
+            playersInGame.get(0).broadcastMessageToAll(playersInGame.get(winnerIndex).getClientUsername() +
+                    " wins - "+ playersInGame.get(winnerIndex).player.getCombination() + ", highest card: "+
+                    playersInGame.get(winnerIndex).player.getHighestRank());
+        }
+        else{
+            playersInGame.get(0).broadcastMessageToAll("There is a tie!");
+            int indexSecondWinner = hand.indexSecondWinner(playersCards);
+            playersInGame.get(0).broadcastMessageToAll(playersInGame.get(winnerIndex).getClientUsername() +
+                    "and "+ playersInGame.get(indexSecondWinner).getClientUsername()+" win - "+ playersInGame.get(winnerIndex).player.getCombination()
+                    + ", highest card: "+ playersInGame.get(winnerIndex).player.getHighestRank());
+        }
+
     }
 }

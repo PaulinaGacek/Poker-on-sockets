@@ -56,6 +56,31 @@ public class Hand {
         combinationRanking.put(Combination.OnePair,2);
         combinationRanking.put(Combination.NoPair,1);
     }
+    public boolean isOnlyOneWinner(ArrayList<ArrayList<Card>> playersCards){
+        int indexWhoWins = indexWhoWins(playersCards);
+        Combination combination = findCombinationInCards(playersCards.get(indexWhoWins));
+        int highestScore = mapHandToPoints(combination, getHighestRank(playersCards.get(indexWhoWins)));
+        for(int i = 0; i < playersCards.size(); ++i){
+            if(indexWhoWins!=i &&
+                    highestScore == mapHandToPoints(findCombinationInCards(playersCards.get(i)), getHighestRank(playersCards.get(i)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int indexSecondWinner(ArrayList<ArrayList<Card>> playersCards){
+        int indexWhoWins = indexWhoWins(playersCards);
+        Combination combination = findCombinationInCards(playersCards.get(indexWhoWins));
+        int highestScore = mapHandToPoints(combination, getHighestRank(playersCards.get(indexWhoWins)));
+        for(int i = 0; i < playersCards.size(); ++i){
+            if(indexWhoWins!=i &&
+                    highestScore == mapHandToPoints(findCombinationInCards(playersCards.get(i)), getHighestRank(playersCards.get(i)))) {
+                return i;
+            }
+        }
+        return indexWhoWins;
+    }
 
     public int indexWhoWins(ArrayList<ArrayList<Card>> playersCards){
         int index = 0;
