@@ -56,11 +56,11 @@ public class Tie {
     }
 
     public String displayPlayersInGame(){
-        String message = "";
-        for(int i = 0; i < players.size(); ++i){
-            message += players.get(i).getName() + ", ";
+        StringBuilder message = new StringBuilder("");
+        for (Player player : players) {
+            message.append(player.getName() + ", ");
         }
-        return message;
+        return message.toString();
     }
 
     public void prepareForNextBetting() {

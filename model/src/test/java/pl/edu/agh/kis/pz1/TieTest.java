@@ -3,6 +3,8 @@ package pl.edu.agh.kis.pz1;
 import static junit.framework.Assert.*;
 import static junit.framework.Assert.assertEquals;
 
+// coverage 100%
+
 import org.testng.annotations.Test;
 public class TieTest {
     @Test
@@ -45,5 +47,49 @@ public class TieTest {
     public void displayPlayersInGameTest() {
         Tie tie = new Tie();
         assertEquals(tie.displayPlayersInGame(),"");
+        Player newPlayer1 = new Player("asia");
+        tie.addPlayer(newPlayer1);
+        assertEquals(tie.displayPlayersInGame(),"asia, ");
+        Player newPlayer2 = new Player("basia");
+        tie.addPlayer(newPlayer2);
+        assertEquals(tie.displayPlayersInGame(),"asia, basia, ");
+    }
+
+    @Test
+    public void prepareFOrNextBettingTest(){
+        Tie tie = new Tie();
+        Player newPlayer1 = new Player("asia");
+        tie.addPlayer(newPlayer1);
+        Player newPlayer2 = new Player("basia");
+        tie.addPlayer(newPlayer2);
+        Player newPlayer3 = new Player("basia");
+        tie.addPlayer(newPlayer3);
+        for(Player player: tie.players){
+            player.setPoolInCurrentBetting(tie.getAnte());
+        }
+        tie.prepareForNextBetting();
+        for(Player player: tie.players){
+            assertEquals(player.getPoolInCurrentBetting(),0);
+        }
+    }
+
+    @Test
+    public void restartTest(){
+        Tie tie = new Tie();
+        Player newPlayer1 = new Player("asia");
+        tie.addPlayer(newPlayer1);
+        Player newPlayer2 = new Player("basia");
+        tie.addPlayer(newPlayer2);
+        Player newPlayer3 = new Player("basia");
+        tie.addPlayer(newPlayer3);
+        for(Player player: tie.players){
+            player.setPoolInCurrentBetting(tie.getAnte());
+        }
+
+        tie.restart();
+        assertEquals(tie.getCommonPool(),0);
+        assertFalse(tie.isGameOver());
+        assertTrue(tie.players.isEmpty());
+        assertEquals(tie.getDeck().getSize(),52);
     }
 }
