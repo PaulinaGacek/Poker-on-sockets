@@ -11,7 +11,7 @@ import pl.edu.agh.kis.pz1.util.Suit;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-// 98% coverage
+// 97% coverage
 
 public class HandTest {
     Combination combinationFlush = Combination.Flush;
@@ -128,5 +128,47 @@ public class HandTest {
         assertEquals(1, hand.indexWhoWins(flush_rFlush_2pairs));
         assertEquals(0, hand.indexWhoWins(flush_3ofKind_2pairs));
         assertEquals(0, hand.indexWhoWins(full_flush_3ofKind_2pairs));
+    }
+
+    @Test
+    public void isOnlyOneWinnerTest(){
+        Hand hand = new Hand();
+        ArrayList<Card> cardsRoyalFlush = new ArrayList<>(
+                Arrays.asList(heartJ, heartQ, heartA, heart10, heartK)
+        );
+        ArrayList<Card> cardsFullHand = new ArrayList<>(
+                Arrays.asList(spadeA, heartQ, heartA, clubA, clubQ)
+        );
+        ArrayList<Card> cardsFlush= new ArrayList<>(
+                Arrays.asList(heart3, heartQ, heartA, heartK, heart2)
+        );
+
+        ArrayList<ArrayList<Card>> royalFlushx2_flush =  new ArrayList<>(
+                Arrays.asList(cardsFlush, cardsRoyalFlush, cardsRoyalFlush)
+        );
+        ArrayList<ArrayList<Card>> full_flush_royalFlush = new ArrayList<>(
+                Arrays.asList(cardsFullHand,cardsFlush, cardsRoyalFlush)
+        );
+        assertFalse(hand.isOnlyOneWinner(royalFlushx2_flush));
+        assertTrue(hand.isOnlyOneWinner(full_flush_royalFlush));
+    }
+
+    @Test
+    public void indexSecondWinner(){
+        Hand hand = new Hand();
+        ArrayList<Card> cardsRoyalFlush = new ArrayList<>(
+                Arrays.asList(heartJ, heartQ, heartA, heart10, heartK)
+        );
+        ArrayList<Card> cardsFullHand = new ArrayList<>(
+                Arrays.asList(spadeA, heartQ, heartA, clubA, clubQ)
+        );
+        ArrayList<Card> cardsFlush= new ArrayList<>(
+                Arrays.asList(heart3, heartQ, heartA, heartK, heart2)
+        );
+
+        ArrayList<ArrayList<Card>> royalFlushx2_flush =  new ArrayList<>(
+                Arrays.asList(cardsFlush, cardsRoyalFlush, cardsRoyalFlush)
+        );
+        assertEquals(hand.indexSecondWinner(royalFlushx2_flush),2);
     }
 }
