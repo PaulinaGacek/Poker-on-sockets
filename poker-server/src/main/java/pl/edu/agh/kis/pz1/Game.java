@@ -138,7 +138,7 @@ public class Game {
     private void collectAnte() {
         currentPlayer.broadcastMessageToAll("\nAnte ("+tie.getAnte()+") was taken from your pool in order to join the game");
         for(ClientHandler player: clientHandlers){
-            player.payAnte(tie.getAnte());
+            player.player.pay(tie.getAnte());
             player.broadcastMessageToItself("Your current pool: " + player.player.getPool());
         }
         tie.addToCommonPool(tie.getAnte() * playersInGame.size());

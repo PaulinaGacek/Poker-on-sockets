@@ -16,6 +16,10 @@ public class ClientHandler implements Runnable{
     public BufferedWriter bufferedWriter;
     private String clientUsername;
     public Player player;
+
+    public Socket getSocket(){return socket;}
+    public BufferedReader getBufferedReader(){return bufferedReader;}
+
     public ClientHandler(Socket socket, Game game, String username){
         try{
             this.socket = socket;
@@ -98,10 +102,10 @@ public class ClientHandler implements Runnable{
      * Removes client from array of clients
      */
     public void removeClientHandler(){
+        broadcastMessageToOthers("SERVER: " + clientUsername + " has left the game :c");
         Game.clientHandlers.remove(this);  //
         Game.playersInGame.remove(this);   //
         clientHandlers.remove(this);
-        broadcastMessageToOthers("SERVER: " + clientUsername + " has left the game :c");
     }
 
     public void closeEverything( Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
@@ -126,11 +130,11 @@ public class ClientHandler implements Runnable{
         broadcastMessageToItself(player.displayCards());
     }
 
-    public void payAnte(int ante){
+    /*public void payAnte(int ante){
         if(!player.pay(ante)){
             broadcastMessageToItself("You have too little money to join this round");
         }
-    }
+    }*/
 
     public String getClientUsername(){
         return clientUsername;
@@ -154,7 +158,7 @@ public class ClientHandler implements Runnable{
         return option;
     }
 
-    private boolean isChoiceSyntaxOk(String answer, int lowerBound, int upperBound){ // bounds are inclusive
+    public boolean isChoiceSyntaxOk(String answer, int lowerBound, int upperBound){ // bounds are inclusive
         String numberOnly = extractNumbersFromString(answer);
         if(numberOnly.equals(""))
             return false;
@@ -163,21 +167,18 @@ public class ClientHandler implements Runnable{
     }
 
     public int raiseStakes(){
-        int option = 0;
-        String numberOnly = "";
         try{
             String s = bufferedReader.readLine();
             while(!isChoiceSyntaxOk(s,1,1000000)){
                 broadcastMessageToItself("Improper syntax of your answer, input positive number");
                 s = bufferedReader.readLine();
             }
-            numberOnly = extractNumbersFromString(s);
-            option = Integer.parseInt(numberOnly);
-            System.out.println("Option "+option);
+            String numberOnly = extractNumbersFromString(s);
+            return Integer.parseInt(numberOnly);
         } catch (IOException e){
             e.printStackTrace();
         }
-        return option;
+        return 0;
     }
 
 
@@ -187,38 +188,33 @@ public class ClientHandler implements Runnable{
 
     // swapping
     public int decideWhatToSwap() {
-        int option = 0;
-        String numberOnly = "";
         try{
             String s = bufferedReader.readLine();
             while(!isChoiceSyntaxOk(s,0,5)){
                 broadcastMessageToItself("Improper syntax of your answer, input number between 0 and 5");
                 s = bufferedReader.readLine();
             }
-            numberOnly = extractNumbersFromString(s);
-            option = Integer.parseInt(numberOnly);
-            System.out.println(getClientUsername()+ " chose to swap "+option+" cards");
+            String numberOnly = extractNumbersFromString(s);
+            return Integer.parseInt(numberOnly);
         } catch (IOException e){
             e.printStackTrace();
         }
-        return option;
+        return 0;
     }
 
     private int chooseCardToSwap(){
-        int option = 0;
-        String numberOnly = "";
         try{
             String s = bufferedReader.readLine();
             while(!isChoiceSyntaxOk(s,1,5)){
                 broadcastMessageToItself("Improper syntax of your answer, input number between 1 and 5");
                 s = bufferedReader.readLine();
             }
-            numberOnly = extractNumbersFromString(s);
-            option = Integer.parseInt(numberOnly);
+            String numberOnly = extractNumbersFromString(s);
+            return Integer.parseInt(numberOnly);
         } catch (IOException e){
             e.printStackTrace();
         }
-        return option;
+        return 0;
     }
 
     public void swapCads(int swappedCards, Tie tie) {

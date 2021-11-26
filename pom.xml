@@ -15,6 +15,7 @@
 
     <sonar.coverage.exclusions>
         poker-client/**/*
+        poker-server/src/main/java/pl/edu/agh/kis/pz1/Server.java
     </sonar.coverage.exclusions>
     </properties>
 
