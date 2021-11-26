@@ -16,12 +16,12 @@ public class ClientHandler implements Runnable{
     public BufferedWriter bufferedWriter;
     private String clientUsername;
     public Player player;
-    public ClientHandler(Socket socket, Game game){
+    public ClientHandler(Socket socket, Game game, String username){
         try{
             this.socket = socket;
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.clientUsername = bufferedReader.readLine();
+            this.clientUsername = username;
             this.player = new Player(this.clientUsername);
             clientHandlers.add(this);
             game.tie.addPlayer(this.player);

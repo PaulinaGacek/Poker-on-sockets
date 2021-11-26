@@ -1,5 +1,7 @@
 package pl.edu.agh.kis.pz1;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -27,8 +29,9 @@ public class Server {
             System.out.println("Poker server is Running...");
             while(!serverSocket.isClosed()){
                 Socket socket = serverSocket.accept(); // returns socket to specific Client
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 if(nrOfPlayers < requiredPlayers){
-                    ClientHandler clientHandler = new ClientHandler(socket, game);
+                    ClientHandler clientHandler = new ClientHandler(socket, game, bufferedReader.readLine());
                     System.out.println("A new player has joined the game!");
                     updateNrOfPlayers();
                     System.out.println("Now there are "+ nrOfPlayers + " players in game");
