@@ -160,12 +160,13 @@ public class Game {
         }
     }
 
-    private void initPlayersInGameArray() {
+    public void initPlayersInGameArray() {
         clientHandlers.addAll(ClientHandler.clientHandlers);
         playersInGame.addAll(ClientHandler.clientHandlers);
+        currentPlayer = clientHandlers.get(0);
     }
 
-    private void updatePlayersArray() {
+    public void updatePlayersArray() {
         int indexToRemove = -1;
         for(int i = 0; i < playersInGame.size();++i){
             if(playersInGame.get(i).player.getHasPassed()){

@@ -130,12 +130,6 @@ public class ClientHandler implements Runnable{
         broadcastMessageToItself(player.displayCards());
     }
 
-    /*public void payAnte(int ante){
-        if(!player.pay(ante)){
-            broadcastMessageToItself("You have too little money to join this round");
-        }
-    }*/
-
     public String getClientUsername(){
         return clientUsername;
     }
