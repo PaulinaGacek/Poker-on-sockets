@@ -14,7 +14,7 @@ public class Server {
     public Server(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
     }
-    public static int requiredPlayers = 0;
+    private int requiredPlayers = 0;
 
     /**
      * Keeps server running while server socket is not closed
@@ -77,7 +77,7 @@ public class Server {
 
     //game
     public int getNrOfPlayers(){return nrOfPlayers;}
-    private void updateNrOfPlayers(){
+    private static void updateNrOfPlayers(){
         nrOfPlayers = ClientHandler.clientHandlers.size();
     }
     private void waitForMorePlayers(ClientHandler clientHandler) {

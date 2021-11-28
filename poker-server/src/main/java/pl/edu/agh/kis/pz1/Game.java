@@ -44,7 +44,7 @@ public class Game {
             checkIfGameOver();
             showWhoseTurn();
             currentPlayer.bufferedWriter.flush();
-            currentPlayer.broadcastMessageToItself("\nCommon pool" + tie.getCommonPool() +
+            currentPlayer.broadcastMessageToItself("\nCommon pool " + tie.getCommonPool() +
                     "\nEntrance pool: "+tie.getPoolInCurrentBetting()+ "\n"
                     + "You have already raised: "+ currentPlayer.player.getPoolInCurrentBetting()+"\n"+
                     "What do you want to do?\n(1) Wait\n(2) Pass\n(3) Raise the stakes");

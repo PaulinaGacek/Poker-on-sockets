@@ -31,6 +31,7 @@ public class PlayerTest {
         assertEquals(pool-2*amountToPay, player1.getPool());
         int currentPool = player1.getPool();
         assertFalse(player1.pay(pool));
+        assertFalse(player1.pay(-2));
         assertEquals(currentPool,player1.getPool());
     }
 
@@ -116,5 +117,15 @@ public class PlayerTest {
         newPlayer.addCard(new Card(Suit.club, Rank.Q));
         newPlayer.addCard(new Card(Suit.club, Rank.A));
         assertEquals(Rank.A, newPlayer.getHighestRank());
+    }
+
+    @Test
+    public void passTest(){
+        Player newPlayer1 = new Player("player 1");
+        Player newPlayer2 = new Player("player 2");
+        assertFalse(newPlayer1.getHasPassed());
+        newPlayer1.setHasPassed();
+        assertTrue(newPlayer1.getHasPassed());
+        assertFalse(newPlayer2.getHasPassed());
     }
 }

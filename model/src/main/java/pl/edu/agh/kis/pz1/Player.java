@@ -63,11 +63,11 @@ public class Player {
         if(cards.isEmpty()){
             return "You do not have any cards yet!";
         }
-        String message = "";
+        StringBuilder message = new StringBuilder("");
         for(Card c: getCards()){
-            message += c.getString();
+            message.append(c.getString());
         }
-        return message;
+        return message.toString();
     }
 
     /**

@@ -34,7 +34,7 @@ public class GameTest {
         assertEquals(Game.clientHandlers.size(),0);
         clean();
     }
-
+    */
     @Test
     public void checkIfGameOverTest() throws IOException {
         prepare();
@@ -43,5 +43,5 @@ public class GameTest {
         assertTrue(game.checkIfGameOver());
         clientHandler1.removeClientHandler();
         clean();
-    }*/
+    }
 }
