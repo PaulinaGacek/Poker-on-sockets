@@ -10,6 +10,7 @@ public class Game {
     public static ArrayList<ClientHandler> playersInGame = new ArrayList<>(); // clients in game
     public Tie tie = new Tie();
     private int WAIT = 1, PASS = 2, RAISE = 3;
+    private boolean preparationRequired = false;
 
     public ClientHandler getCurrentPlayer(){return currentPlayer;}
 
@@ -78,8 +79,10 @@ public class Game {
     public void prepareGame(){
         if(tie.isGameOver()){
             prepareForNewGame();
+            preparationRequired = true;
         }
         initPlayersInGameArray();
+        prepareAfterInitialisation();
         collectAnte();
         dealOutInitialCards();
         tie.getDeck().displayDeck();
@@ -91,10 +94,20 @@ public class Game {
         clientHandlers.clear();
         playersInGame.clear();
         tie.players.clear();
-        for(ClientHandler player: playersInGame){
-        tie.addPlayer(player.player);
-        }
         tie.setPoolInCurrentBetting(0);
+        tie.setPool(0);
+    }
+
+    private void prepareAfterInitialisation(){
+        if(preparationRequired){
+            for(ClientHandler player: playersInGame){
+                tie.addPlayer(player.player);
+                player.player.setHasNotPassed();
+            }
+            for(Player player: tie.players){
+                player.setHasNotPassed();
+            }
+        }
     }
 
 
@@ -282,6 +295,8 @@ public class Game {
         if(tie.isGameOver()){
             currentPlayer.broadcastMessageToAll("GAME OVER");
             currentPlayer.broadcastMessageToAll(currentPlayer.getClientUsername()+" WON "+tie.getCommonPool());
+            currentPlayer.player.collectAward(tie.getCommonPool());
+            tie.setPool(0);
             return true;
         }
         return false;

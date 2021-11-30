@@ -32,6 +32,7 @@ public class Tie {
     }
 
     // setters
+    public void setPool(int amount){commonPool = amount;}
     public void setGameOver(){
         isGameOver = true;
     }

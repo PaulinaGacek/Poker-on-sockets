@@ -31,6 +31,7 @@ public class Player {
 
     // setters
     public void setHasPassed(){hasPassed = true;}
+    public void setHasNotPassed(){hasPassed = false;}
     public void setTheirTurn(){isTheirTurn = true;}
     public void setNotTheirTurn(){isTheirTurn = false;}
     public void setPoolInCurrentBetting(int newPool){
@@ -38,6 +39,10 @@ public class Player {
     }
 
     // game
+
+    public void collectAward(int amount){
+        pool += amount;
+    }
     public boolean pay(int amount){
         if(amount < 0 || amount > pool){
             return false;
