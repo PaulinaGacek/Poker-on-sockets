@@ -5,7 +5,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.stream.Collectors;
 
 import static junit.framework.Assert.*;
 
@@ -36,7 +35,7 @@ public class ClientHandlerTest {
     public void closeEverythingTest() throws IOException {
         prepare();
         ClientHandler clientHandler1 = new ClientHandler(socket, game, "ala");
-        clientHandler1.closeEverything(clientHandler1.getSocket(), clientHandler1.getBufferedReader(), clientHandler1.bufferedWriter);
+        clientHandler1.closeEverything();
         assertEquals(ClientHandler.clientHandlers.size(),0);
         socket.close();
         serverSocket.close();
@@ -49,7 +48,7 @@ public class ClientHandlerTest {
         assertTrue(clientHandler1.isChoiceSyntaxOk("1",1,2));
         assertFalse(clientHandler1.isChoiceSyntaxOk("cs20",1,5));
         //clean up
-        clientHandler1.closeEverything(clientHandler1.getSocket(), clientHandler1.getBufferedReader(), clientHandler1.bufferedWriter);
+        clientHandler1.closeEverything();
         socket.close();
         serverSocket.close();
     }
@@ -60,7 +59,7 @@ public class ClientHandlerTest {
         ClientHandler clientHandler1 = new ClientHandler(socket, game, "a");
         ClientHandler clientHandler2 = new ClientHandler(socket, game, "b");
         game.initPlayersInGameArray();
-        game.updatePlayersArray();
+        game.removePassedPlayers();
         clientHandler1.broadcastMessageToAll("example");
         assertNotNull(clientHandler1.getBufferedReader().lines().toString());
         clientHandler1.broadcastMessageToOthers("example");
@@ -68,8 +67,8 @@ public class ClientHandlerTest {
         clientHandler1.broadcastMessageToItself("example");
         assertNotNull(clientHandler1.getBufferedReader().lines().toString());
         //clean up
-        clientHandler1.closeEverything(clientHandler1.getSocket(), clientHandler1.getBufferedReader(), clientHandler1.bufferedWriter);
-        clientHandler2.closeEverything(clientHandler1.getSocket(), clientHandler1.getBufferedReader(), clientHandler1.bufferedWriter);
+        clientHandler1.closeEverything();
+        clientHandler2.closeEverything();
         socket.close();
         serverSocket.close();
     }

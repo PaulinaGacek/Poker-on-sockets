@@ -9,16 +9,12 @@ public class Game {
     public static ArrayList<ClientHandler> clientHandlers = new ArrayList<>(); // clients connected to socket
     public static ArrayList<ClientHandler> playersInGame = new ArrayList<>(); // clients in game
     public Tie tie = new Tie();
-    int WAIT = 1, PASS = 2, RAISE = 3;
+    private int WAIT = 1, PASS = 2, RAISE = 3;
+
+    public ClientHandler getCurrentPlayer(){return currentPlayer;}
 
     public void play() throws IOException {
-        initPlayersInGameArray();
-        currentPlayer = clientHandlers.get(0);
-        collectAnte();
-        dealOutInitialCards();
-        tie.getDeck().displayDeck();
-        displayCards();
-
+        prepareGame();
         // 1st betting
         if(!tie.isGameOver()){
             handleBetting();
@@ -30,11 +26,24 @@ public class Game {
         currentPlayer.broadcastMessageToAll("Betting round finished");
 
         // swapping
-        //handleSwapping();
+        if(!tie.isGameOver()){
+            handleSwapping();
+        }
+
         //second betting
+        if(!tie.isGameOver()){
+            handleBetting();
+            while (!checkIfRoundIsComplete() && !tie.isGameOver()) {
+                handleBetting();
+            }
+            tie.prepareForNextBetting();
+        }
+        currentPlayer.broadcastMessageToAll("Betting round finished");
 
         //judging
-        //handleRevealingHands();
+        if(!tie.isGameOver()){
+            handleRevealingHands();
+        }
         System.out.println("Finish");
     }
 
@@ -43,7 +52,6 @@ public class Game {
         for(int i = 0; i < playersInGame.size(); ++i){
             checkIfGameOver();
             showWhoseTurn();
-            currentPlayer.bufferedWriter.flush();
             currentPlayer.broadcastMessageToItself("\nCommon pool " + tie.getCommonPool() +
                     "\nEntrance pool: "+tie.getPoolInCurrentBetting()+ "\n"
                     + "You have already raised: "+ currentPlayer.player.getPoolInCurrentBetting()+"\n"+
@@ -60,12 +68,21 @@ public class Game {
                 i--;
             }
             thankUNext();
-            updatePlayersArray();
+            removePassedPlayers();
             currentPlayer.broadcastMessageToAll(displayPlayersInGame());
             if(checkIfGameOver()){
                 break;
             }
         }
+    }
+
+    public void prepareGame(){
+        initPlayersInGameArray();
+        currentPlayer = clientHandlers.get(0);
+        collectAnte();
+        dealOutInitialCards();
+        tie.getDeck().displayDeck();
+        displayCards();
     }
 
     private void handleRaisingStakes(){
@@ -91,7 +108,7 @@ public class Game {
         currentPlayer.broadcastMessageToAll("Common pool: "+ tie.getCommonPool());
     }
 
-    private void handleMove(int move) {
+    public void handleMove(int move) {
         if(move==PASS){
             currentPlayer.player.setHasPassed();
             currentPlayer.broadcastMessageToOthers(currentPlayer.getClientUsername()+" passed");
@@ -102,7 +119,12 @@ public class Game {
         }
     }
 
-    private boolean isMovePossible(int move){
+    /**
+     * Checks if player can do such move
+     * @param move move selected by player (wait, pass, raise)
+     * @return whether move is possible
+     */
+    public boolean isMovePossible(int move){
         if(move==WAIT){
             return tie.getPoolInCurrentBetting() == currentPlayer.player.getPoolInCurrentBetting();
         }else if(move==RAISE) {
@@ -117,7 +139,7 @@ public class Game {
      * (B) all players pay pool in current betting
      * @return whether betting round is complete
      */
-    private boolean checkIfRoundIsComplete(){
+    public boolean checkIfRoundIsComplete(){
         for(int i = 0; i < playersInGame.size(); ++i){
             if(playersInGame.get(i).player.getHasPassed()){
                 playersInGame.remove(playersInGame.get(i));
@@ -135,7 +157,7 @@ public class Game {
         return true;
     }
 
-    private void collectAnte() {
+    public void collectAnte() {
         currentPlayer.broadcastMessageToAll("\nAnte ("+tie.getAnte()+") was taken from your pool in order to join the game");
         for(ClientHandler player: clientHandlers){
             player.player.pay(tie.getAnte());
@@ -160,13 +182,31 @@ public class Game {
         }
     }
 
+    /**
+     * initialises clientHandlers and playersInGame lists
+     */
     public void initPlayersInGameArray() {
         clientHandlers.addAll(ClientHandler.clientHandlers);
         playersInGame.addAll(ClientHandler.clientHandlers);
         currentPlayer = clientHandlers.get(0);
     }
 
-    public void updatePlayersArray() {
+    /**
+     * updates clientHandlers and playersInGame lists
+     */
+    public void updatePlayersInGame(){
+        if(ClientHandler.clientHandlers.size()!=clientHandlers.size()){
+            clientHandlers.clear();
+            clientHandlers.addAll(ClientHandler.clientHandlers);
+            currentPlayer = clientHandlers.get(0);
+        }
+        if(ClientHandler.clientHandlers.size()!=playersInGame.size()){
+            playersInGame.clear();
+            playersInGame.addAll(ClientHandler.clientHandlers);
+        }
+    }
+
+    public void removePassedPlayers() {
         int indexToRemove = -1;
         for(int i = 0; i < playersInGame.size();++i){
             if(playersInGame.get(i).player.getHasPassed()){
@@ -197,7 +237,7 @@ public class Game {
         currentPlayer.broadcastMessageToOthers("It is " + currentPlayer.getClientUsername() + "'s turn");
     }
 
-    private String displayPlayersInGame(){
+    public String displayPlayersInGame(){
         StringBuilder message = new StringBuilder("Players in game: ");
         for(ClientHandler player: playersInGame){
             message.append(player.getClientUsername()).append(", ");
@@ -257,7 +297,7 @@ public class Game {
     }
 
     public void restartGame() {
-        clientHandlers.clear();
+        clientHandlers.clear(); // order changed
         playersInGame.clear();
         tie.restart();
     }

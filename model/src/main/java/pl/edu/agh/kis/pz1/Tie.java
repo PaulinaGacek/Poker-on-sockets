@@ -11,6 +11,7 @@ public class Tie {
     private int poolInCurrentBetting = 0;
     Move[] moves = new Move[]{Move.WAIT, Move.PASS, Move.RAISE};
     private boolean isGameOver = false;
+    private int ante = 100;
     public ArrayList<Player> players = new ArrayList<>();
 
     // getters
@@ -21,7 +22,6 @@ public class Tie {
         return isGameOver;
     }
     public int getAnte(){
-        int ante = 100;
         return ante;
     }
     public int getCommonPool(){
@@ -34,6 +34,9 @@ public class Tie {
     // setters
     public void setGameOver(){
         isGameOver = true;
+    }
+    public void setGameNotOver(){
+        isGameOver = false;
     }
     public void setPoolInCurrentBetting(int newPool){
         poolInCurrentBetting = newPool;
@@ -58,7 +61,8 @@ public class Tie {
     public String displayPlayersInGame(){
         StringBuilder message = new StringBuilder("");
         for (Player player : players) {
-            message.append(player.getName() + ", ");
+            message.append(player.getName());
+            message.append(", ");
         }
         return message.toString();
     }

@@ -45,16 +45,16 @@ public class Hand {
     }
 
     private static void initialiseCombinationRanking(){
-        combinationRanking.put(Combination.RoyalFlush,10);
-        combinationRanking.put(Combination.StraightFlush,9);
-        combinationRanking.put(Combination.FourOfTheKind,8);
-        combinationRanking.put(Combination.FullHouse,7);
-        combinationRanking.put(Combination.Flush,6);
-        combinationRanking.put(Combination.Straight,5);
-        combinationRanking.put(Combination.ThreeOfTheKind,4);
-        combinationRanking.put(Combination.TwoPairs,3);
-        combinationRanking.put(Combination.OnePair,2);
-        combinationRanking.put(Combination.NoPair,1);
+        combinationRanking.put(Combination.ROYAL_FLUSH,10);
+        combinationRanking.put(Combination.STRAIGHT_FLUSH,9);
+        combinationRanking.put(Combination.FOUR_OF_THE_KIND,8);
+        combinationRanking.put(Combination.FULL_HOUSE,7);
+        combinationRanking.put(Combination.FLUSH,6);
+        combinationRanking.put(Combination.STRAIGHT,5);
+        combinationRanking.put(Combination.THREE_OF_THE_KIND,4);
+        combinationRanking.put(Combination.TWO_PAIRS,3);
+        combinationRanking.put(Combination.ONE_PAIR,2);
+        combinationRanking.put(Combination.NO_PAIR,1);
     }
     public boolean isOnlyOneWinner(ArrayList<ArrayList<Card>> playersCards){
         int indexWhoWins = indexWhoWins(playersCards);
@@ -130,23 +130,23 @@ public class Hand {
             playersRanks[rankArray.indexOf(card.getRank())]++;
         }
         if(checkRoyalFlush(playersRanks,playersSuits))
-            return Combination.RoyalFlush;
+            return Combination.ROYAL_FLUSH;
         if(checkStraightFlush(playersRanks,playersSuits))
-            return Combination.StraightFlush;
+            return Combination.STRAIGHT_FLUSH;
         if(getMaxOfTheKind(playersRanks)==4)
-            return Combination.FourOfTheKind;
+            return Combination.FOUR_OF_THE_KIND;
         if(checkSFull(playersRanks))
-            return Combination.FullHouse;
+            return Combination.FULL_HOUSE;
         if(checkFlush(playersSuits))
-            return Combination.Flush;
+            return Combination.FLUSH;
         if(getMaxOfTheKind(playersRanks)==3)
-            return Combination.ThreeOfTheKind;
+            return Combination.THREE_OF_THE_KIND;
         // Two Pairs
         if(checkTwoPairs(playersRanks))
-            return Combination.TwoPairs;
+            return Combination.TWO_PAIRS;
         if(getMaxOfTheKind(playersRanks)==2)
-            return Combination.OnePair;
-        return Combination.NoPair;
+            return Combination.ONE_PAIR;
+        return Combination.NO_PAIR;
     }
 
     private boolean checkTwoPairs(int[] playersRanks) {

@@ -13,7 +13,7 @@ public class ClientHandler implements Runnable{
     public static ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
     private Socket socket;
     private BufferedReader bufferedReader;
-    public BufferedWriter bufferedWriter;
+    private BufferedWriter bufferedWriter;
     private String clientUsername;
     public Player player;
 
@@ -33,7 +33,7 @@ public class ClientHandler implements Runnable{
             broadcastMessageToItself("Welcome to the game!");
         }
         catch (IOException e) {
-            closeEverything(socket, bufferedReader, bufferedWriter);
+            closeEverything();
         }
     }
 
@@ -48,23 +48,27 @@ public class ClientHandler implements Runnable{
                 }
             }
             catch(IOException e){
-                closeEverything(socket, bufferedReader, bufferedWriter);
+                closeEverything();
                 break;
             }
         }
+    }
+
+    private void broadcastMessage(String messageToSend, ClientHandler clientHandler) throws IOException {
+        clientHandler.bufferedWriter.write(messageToSend);
+        clientHandler.bufferedWriter.newLine();
+        clientHandler.bufferedWriter.flush();
     }
 
     public void broadcastMessageToOthers(String messageToSend){
         for(ClientHandler clientHandler: clientHandlers){
             try{
                 if(!clientHandler.clientUsername.equals(clientUsername)){
-                    clientHandler.bufferedWriter.write(messageToSend);
-                    clientHandler.bufferedWriter.newLine();
-                    clientHandler.bufferedWriter.flush();
+                    broadcastMessage(messageToSend, clientHandler);
                 }
             }
             catch(IOException e){
-                closeEverything(socket, bufferedReader, bufferedWriter);
+                closeEverything();
             }
         }
     }
@@ -73,13 +77,11 @@ public class ClientHandler implements Runnable{
         for(ClientHandler clientHandler: clientHandlers){
             try{
                 if( clientHandler.clientUsername.equals(clientUsername)){
-                    clientHandler.bufferedWriter.write(messageToSend);
-                    clientHandler.bufferedWriter.newLine();
-                    clientHandler.bufferedWriter.flush();
+                    broadcastMessage(messageToSend, clientHandler);
                 }
             }
             catch(IOException e){
-                closeEverything(socket, bufferedReader, bufferedWriter);
+                closeEverything();
             }
         }
     }
@@ -87,12 +89,10 @@ public class ClientHandler implements Runnable{
     public void broadcastMessageToAll(String messageToSend){
         for(ClientHandler clientHandler: clientHandlers){
             try{
-                clientHandler.bufferedWriter.write(messageToSend);
-                clientHandler.bufferedWriter.newLine();
-                clientHandler.bufferedWriter.flush();
+                broadcastMessage(messageToSend, clientHandler);
             }
             catch(IOException e){
-                closeEverything(socket, bufferedReader, bufferedWriter);
+                closeEverything();
             }
         }
     }
@@ -108,7 +108,7 @@ public class ClientHandler implements Runnable{
         clientHandlers.remove(this);
     }
 
-    public void closeEverything( Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
+    public void closeEverything() {
         removeClientHandler();
         try{
             if(bufferedReader != null) {
