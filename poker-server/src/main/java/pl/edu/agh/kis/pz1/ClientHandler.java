@@ -175,6 +175,10 @@ public class ClientHandler implements Runnable{
         return returnDecision(0,5);
     }
 
+    public int decideIfStayInGame(){
+        return returnDecision(1,2);
+    }
+
     private int chooseCardToSwap(){
         return returnDecision(1,5);
     }

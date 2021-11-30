@@ -22,33 +22,43 @@ public class Server {
     private void startServer(){
         try{
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter nr of players: ");
-            requiredPlayers = scanner.nextInt();
+            while(requiredPlayers<2 || requiredPlayers>4){
+                logMessage("Enter nr of players: ");
+                requiredPlayers = scanner.nextInt();
+            }
             Game game = new Game();
             game.tie.getDeck().displayDeck();
-            System.out.println("Poker server is Running...");
+            logMessage("Poker server is Running...");
             while(!serverSocket.isClosed()){
                 Socket socket = serverSocket.accept(); // returns socket to specific Client
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 if(nrOfPlayers < requiredPlayers){
                     ClientHandler clientHandler = new ClientHandler(socket, game, bufferedReader.readLine());
-                    System.out.println("A new player has joined the game!");
+                    logMessage("A new player has joined the game!");
                     updateNrOfPlayers();
-                    System.out.println("Now there are "+ nrOfPlayers + " players in game");
+                    logMessage("Now there are "+ nrOfPlayers + " players in game");
                     waitForMorePlayers(clientHandler);
                     Thread thread = new Thread(clientHandler);
                     thread.start();
                     if(nrOfPlayers==requiredPlayers){
                         game.play();
-                        game.restartGame();
-                        ClientHandler.clientHandlers.clear();
-                        updateNrOfPlayers();
-                        game.tie.getDeck().displayDeck();
-                        System.out.println("Poker server is Running...");
+                        if(!game.areEagerForNextRound()){
+                            game.restartGame();
+                            ClientHandler.clientHandlers.clear();
+                            updateNrOfPlayers();
+                            game.tie.getDeck().displayDeck();
+                            logMessage("Poker server is Running...");
+                        }
+                        else{
+                            logMessage("Next round is up!");
+                            game.tie.getDeck().displayDeck();
+                            logMessage("Poker server is Running...");
+                            game.play();
+                        }
                     }
                 }
                 else{
-                    System.out.println("Nr of players exceeded!");
+                    logMessage("Nr of players exceeded!");
                 }
             }
         }
@@ -85,5 +95,9 @@ public class Server {
             clientHandler.broadcastMessageToAll("We are still waiting for " + (requiredPlayers-nrOfPlayers)+ " players...");
         else if(nrOfPlayers==requiredPlayers)
             clientHandler.broadcastMessageToAll("All players joined, lets start the game!");
+    }
+
+    private void logMessage(String message){
+        System.out.println(message);
     }
 }

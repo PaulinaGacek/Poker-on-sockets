@@ -15,8 +15,8 @@ public class GameTest {
 
     public void prepare() throws IOException {
         game = new Game();
-        serverSocket = new ServerSocket(1233);
-        socket = new Socket("localhost", 1233);
+        serverSocket = new ServerSocket(1231);
+        socket = new Socket("localhost", 1231);
     }
 
     public void clean() throws IOException {
@@ -140,7 +140,7 @@ public class GameTest {
         clean();
     }
 
-    @Test
+/*    @Test
     public void playTest() throws IOException {
         prepare();
         ClientHandler  clientHandler1 = new ClientHandler(socket, game, "m");
@@ -153,6 +153,6 @@ public class GameTest {
         clientHandler2.removeClientHandler();
         clientHandler3.removeClientHandler();
         clean();
-    }
+    }*/
 
 }

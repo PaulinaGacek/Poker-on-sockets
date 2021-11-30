@@ -24,7 +24,6 @@ public class Game {
             }
             tie.prepareForNextBetting();
         }
-        currentPlayer.broadcastMessageToAll("Betting round finished");
 
         // swapping
         if(!tie.isGameOver()){
@@ -39,13 +38,12 @@ public class Game {
             }
             tie.prepareForNextBetting();
         }
-        currentPlayer.broadcastMessageToAll("Betting round finished");
 
         //judging
         if(!tie.isGameOver()){
             handleRevealingHands();
         }
-        System.out.println("Finish");
+        System.out.println("Round has finished");
     }
 
 
@@ -78,13 +76,27 @@ public class Game {
     }
 
     public void prepareGame(){
+        if(tie.isGameOver()){
+            prepareForNewGame();
+        }
         initPlayersInGameArray();
-        currentPlayer = clientHandlers.get(0);
         collectAnte();
         dealOutInitialCards();
         tie.getDeck().displayDeck();
         displayCards();
     }
+
+    private void prepareForNewGame() {
+        tie.setGameNotOver();
+        clientHandlers.clear();
+        playersInGame.clear();
+        tie.players.clear();
+        for(ClientHandler player: playersInGame){
+        tie.addPlayer(player.player);
+        }
+        tie.setPoolInCurrentBetting(0);
+    }
+
 
     private void handleRaisingStakes(){
         currentPlayer.broadcastMessageToItself("Enter stake you want to raise: ");
@@ -187,6 +199,23 @@ public class Game {
      * initialises clientHandlers and playersInGame lists
      */
     public void initPlayersInGameArray() {
+        // parameters have be zeroed
+        //clientHandlers.clear();
+        //playersInGame.clear();
+        clientHandlers.addAll(ClientHandler.clientHandlers);
+        playersInGame.addAll(ClientHandler.clientHandlers);
+        currentPlayer = clientHandlers.get(0);
+
+        //tie.players.clear();
+        //for(ClientHandler player: playersInGame){
+        //    tie.addPlayer(player.player);
+        //}
+    }
+
+    /**
+     * initialises clientHandlers and playersInGame lists
+     */
+    public void initPlayersInGameArrayTest() {
         clientHandlers.addAll(ClientHandler.clientHandlers);
         playersInGame.addAll(ClientHandler.clientHandlers);
         currentPlayer = clientHandlers.get(0);
@@ -301,5 +330,16 @@ public class Game {
         clientHandlers.clear(); // order changed
         playersInGame.clear();
         tie.restart();
+    }
+
+    public boolean areEagerForNextRound() {
+        for(ClientHandler player: clientHandlers){
+            player.broadcastMessageToOthers(player.getClientUsername()+" is making decision whether wants to play again");
+            player.broadcastMessageToItself("\n\nRound is finished!\nDo you want to continue the game?\n(1) YES\n(2) NO");
+            if(player.decideIfStayInGame()==2){
+                return false;
+            }
+        }
+        return true;
     }
 }
