@@ -89,8 +89,8 @@ public class Player {
         return hand.findCombinationInCards(getCards());
     }
 
-    public Rank getHighestRank(){
+    public Rank getHighestRankInCombination(){
         Hand hand = new Hand();
-        return hand.getHighestRank(getCards());
+        return hand.getHighestRankInCombination(getCards());
     }
 }

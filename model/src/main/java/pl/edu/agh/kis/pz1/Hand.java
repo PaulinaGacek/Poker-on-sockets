@@ -56,6 +56,11 @@ public class Hand {
         combinationRanking.put(Combination.ONE_PAIR,2);
         combinationRanking.put(Combination.NO_PAIR,1);
     }
+
+    /**
+     * @param playersCards array numberOfPlayers x 5 with their cards
+     * @return whether there is only one winner
+     */
     public boolean isOnlyOneWinner(ArrayList<ArrayList<Card>> playersCards){
         int indexWhoWins = indexWhoWins(playersCards);
         Combination combination = findCombinationInCards(playersCards.get(indexWhoWins));
@@ -69,19 +74,10 @@ public class Hand {
         return true;
     }
 
-    public int indexSecondWinner(ArrayList<ArrayList<Card>> playersCards){
-        int indexWhoWins = indexWhoWins(playersCards);
-        Combination combination = findCombinationInCards(playersCards.get(indexWhoWins));
-        int highestScore = mapHandToPoints(combination, getHighestRankInCombination(playersCards.get(indexWhoWins)));
-        for(int i = 0; i < playersCards.size(); ++i){
-            if(indexWhoWins!=i &&
-                    highestScore == mapHandToPoints(findCombinationInCards(playersCards.get(i)), getHighestRankInCombination(playersCards.get(i)))) {
-                return i;
-            }
-        }
-        return indexWhoWins;
-    }
-
+    /**
+     * @param playersCards array numberOfPlayers x 5 with their cards
+     * @return index of the first winner
+     */
     public int indexWhoWins(ArrayList<ArrayList<Card>> playersCards){
         int index = 0;
         Combination combination = findCombinationInCards(playersCards.get(0));
@@ -95,6 +91,24 @@ public class Hand {
         }
         return index;
     }
+
+    /**
+     * @param playersCards array numberOfPlayers x 5 with their cards
+     * @return index of the second winner
+     */
+    public int indexSecondWinner(ArrayList<ArrayList<Card>> playersCards){
+        int indexWhoWins = indexWhoWins(playersCards);
+        Combination combination = findCombinationInCards(playersCards.get(indexWhoWins));
+        int highestScore = mapHandToPoints(combination, getHighestRankInCombination(playersCards.get(indexWhoWins)));
+        for(int i = 0; i < playersCards.size(); ++i){
+            if(indexWhoWins!=i &&
+                    highestScore == mapHandToPoints(findCombinationInCards(playersCards.get(i)), getHighestRankInCombination(playersCards.get(i)))) {
+                return i;
+            }
+        }
+        return indexWhoWins;
+    }
+
     /**
      * The highest card is important only when there is a tie, it means that
      * higher card cannot be more important than the value of combination,
@@ -109,7 +123,7 @@ public class Hand {
         return rankPoints + combinationPoints;
     }
 
-    public Rank getHighestRank(ArrayList<Card> cards){
+    private Rank getHighestRank(ArrayList<Card> cards){
         int[] playersRanks = {0,0,0,0,0,0,0,0,0,0,0,0,0};
         for(Card card: cards){
             playersRanks[rankArray.indexOf(card.getRank())]++;
@@ -122,6 +136,53 @@ public class Hand {
         return rankArray.get(0);
     }
 
+    private Rank getHighestFrom4OfTheKind(ArrayList<Card> cards, int[] playersRanks){
+        for(Card card: cards){
+            if(playersRanks[rankArray.indexOf(card.getRank())]==4){
+                return card.getRank();
+            }
+        }
+        return getHighestRank(cards);
+    }
+
+    private Rank getHighestFrom3OfTheKind(ArrayList<Card> cards, int[] playersRanks){
+        for(Card card: cards){
+            if(playersRanks[rankArray.indexOf(card.getRank())]==3){
+                return card.getRank();
+            }
+        }
+        return getHighestRank(cards);
+    }
+
+    private Rank getHighestFromOnePair(ArrayList<Card> cards, int[] playersRanks){
+        for(Card card: cards){
+            if(playersRanks[rankArray.indexOf(card.getRank())]==2){
+                return card.getRank();
+            }
+        }
+        return getHighestRank(cards);
+    }
+
+    private Rank getHighestFromTwoPairs(ArrayList<Card> cards, int[] playersRanks){
+        Rank firstPair = Rank._2;
+        Rank secondPair = Rank._2;
+        boolean firstAssigned = false;
+        for(Card card: cards){
+            if(playersRanks[rankArray.indexOf(card.getRank())]==2 && !firstAssigned){
+                firstAssigned = true;
+                firstPair = card.getRank();
+            }
+            else if(playersRanks[rankArray.indexOf(card.getRank())]==2){
+                secondPair = card.getRank();
+            }
+        }
+        if(rankArray.indexOf(firstPair)>rankArray.indexOf(secondPair)){
+            return firstPair;
+        }
+        return getHighestRank(cards);
+    }
+
+
     public Rank getHighestRankInCombination(ArrayList<Card> cards){
         int[] playersRanks = {0,0,0,0,0,0,0,0,0,0,0,0,0};
         for(Card card: cards){
@@ -129,42 +190,16 @@ public class Hand {
         }
         Combination combination = findCombinationInCards(cards);
         if(combination==Combination.FOUR_OF_THE_KIND){
-            for(Card card: cards){
-                if(playersRanks[rankArray.indexOf(card.getRank())]==4){
-                    return card.getRank();
-                }
-            }
+            return getHighestFrom4OfTheKind(cards, playersRanks);
         }
         if(combination==Combination.THREE_OF_THE_KIND){
-            for(Card card: cards){
-                if(playersRanks[rankArray.indexOf(card.getRank())]==3){
-                    return card.getRank();
-                }
-            }
+            return getHighestFrom3OfTheKind(cards, playersRanks);
         }
         if(combination==Combination.ONE_PAIR){
-            for(Card card: cards){
-                if(playersRanks[rankArray.indexOf(card.getRank())]==2){
-                    return card.getRank();
-                }
-            }
+            return getHighestFromOnePair(cards, playersRanks);
         }
         if(combination==Combination.TWO_PAIRS){
-            Rank firstPair = Rank._2;
-            Rank secondPair = Rank._2;
-            boolean firstAssigned = false;
-            for(Card card: cards){
-                if(playersRanks[rankArray.indexOf(card.getRank())]==2 && !firstAssigned){
-                    firstAssigned = true;
-                    firstPair = card.getRank();
-                }
-                else if(playersRanks[rankArray.indexOf(card.getRank())]==2){
-                    secondPair = card.getRank();
-                }
-            }
-            if(rankArray.indexOf(firstPair)>rankArray.indexOf(secondPair)){
-                return firstPair;
-            }
+            return getHighestFromTwoPairs(cards, playersRanks);
         }
         return getHighestRank(cards);
     }

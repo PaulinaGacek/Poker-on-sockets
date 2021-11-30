@@ -286,14 +286,14 @@ public class Game {
         if(hand.isOnlyOneWinner(playersCards)){
             playersInGame.get(0).broadcastMessageToAll(playersInGame.get(winnerIndex).getClientUsername() +
                     " wins - "+ playersInGame.get(winnerIndex).player.getCombination() + ", highest card: "+
-                    playersInGame.get(winnerIndex).player.getHighestRank());
+                    playersInGame.get(winnerIndex).player.getHighestRankInCombination());
         }
         else{
             playersInGame.get(0).broadcastMessageToAll("There is a tie!");
             int indexSecondWinner = hand.indexSecondWinner(playersCards);
             playersInGame.get(0).broadcastMessageToAll(playersInGame.get(winnerIndex).getClientUsername() +
                     " and "+ playersInGame.get(indexSecondWinner).getClientUsername()+" win - "+ playersInGame.get(winnerIndex).player.getCombination()
-                    + ", highest card: "+ playersInGame.get(winnerIndex).player.getHighestRank());
+                    + ", highest card: "+ playersInGame.get(winnerIndex).player.getHighestRankInCombination());
         }
     }
 

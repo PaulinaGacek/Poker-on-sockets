@@ -116,7 +116,7 @@ public class PlayerTest {
         newPlayer.addCard(new Card(Suit.club, Rank._2));
         newPlayer.addCard(new Card(Suit.club, Rank.Q));
         newPlayer.addCard(new Card(Suit.club, Rank.A));
-        assertEquals(Rank.A, newPlayer.getHighestRank());
+        assertEquals(Rank._2, newPlayer.getHighestRankInCombination());
     }
 
     @Test
