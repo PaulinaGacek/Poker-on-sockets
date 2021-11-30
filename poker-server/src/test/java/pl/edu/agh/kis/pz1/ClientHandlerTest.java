@@ -47,6 +47,7 @@ public class ClientHandlerTest {
         ClientHandler clientHandler1 = new ClientHandler(socket, game, "ala");
         assertTrue(clientHandler1.isChoiceSyntaxOk("1",1,2));
         assertFalse(clientHandler1.isChoiceSyntaxOk("cs20",1,5));
+        assertFalse(clientHandler1.isChoiceSyntaxOk("cs",1,5));
         //clean up
         clientHandler1.closeEverything();
         socket.close();
@@ -72,4 +73,5 @@ public class ClientHandlerTest {
         socket.close();
         serverSocket.close();
     }
+
 }

@@ -29,6 +29,9 @@ public class HandTest {
     Card clubQ = new Card(Suit.club, Rank.Q);
     Card clubA = new Card(Suit.club, Rank.A);
     Card spadeA = new Card(Suit.spade, Rank.A);
+    Card spade2 = new Card(Suit.spade, Rank._2);
+    Card club2 = new Card(Suit.club, Rank._2);
+    Card diamond2 = new Card(Suit.diamond, Rank._2);
 
     @Test
     public void mapHandToPointsTest(){
@@ -170,5 +173,39 @@ public class HandTest {
                 Arrays.asList(cardsFlush, cardsRoyalFlush, cardsRoyalFlush)
         );
         assertEquals(hand.indexSecondWinner(royalFlushx2_flush),2);
+    }
+
+    @Test
+    public void getHighestRankInCombinationTest(){
+        Hand hand = new Hand();
+        ArrayList<Card> cardsRoyalFlush = new ArrayList<>(
+                Arrays.asList(heartJ, heartQ, heartA, heart10, heartK)
+        );
+        ArrayList<Card> cardsFullHand = new ArrayList<>(
+                Arrays.asList(spadeA, heartQ, heartA, clubA, clubQ)
+        );
+        ArrayList<Card> cardsFlush= new ArrayList<>(
+                Arrays.asList(heart3, heartQ, heartA, heartK, heart2)
+        );
+        ArrayList<Card> cardsThreeOfTheKind= new ArrayList<>(
+                Arrays.asList(spadeA, heartQ, heartA, clubA, heart2)
+        );
+        ArrayList<Card> cardsTwoPairs = new ArrayList<>(
+                Arrays.asList(spadeA, heartQ, heart2, clubA, clubQ)
+        );
+        ArrayList<Card> cardsOnePair = new ArrayList<>(
+                Arrays.asList(spadeA, heart3, heart2, spade2, clubQ)
+        );
+        ArrayList<Card> cards4ofTheKind = new ArrayList<>(
+                Arrays.asList(heart2, diamond2, spade2, club2, heartK)
+        );
+        assertEquals(hand.getHighestRankInCombination(cardsRoyalFlush), Rank.A);
+        assertEquals(hand.getHighestRankInCombination(cardsFullHand), Rank.A);
+        assertEquals(hand.getHighestRankInCombination(cardsFlush), Rank.A);
+        assertEquals(hand.getHighestRankInCombination(cardsThreeOfTheKind), Rank.A);
+        assertEquals(hand.getHighestRankInCombination(cardsTwoPairs), Rank.A);
+        assertEquals(hand.getHighestRankInCombination(cards4ofTheKind), Rank._2);
+        assertEquals(hand.getHighestRankInCombination(cardsOnePair), Rank._2);
+
     }
 }

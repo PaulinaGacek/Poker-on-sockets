@@ -54,7 +54,7 @@ public class ClientHandler implements Runnable{
         }
     }
 
-    private void broadcastMessage(String messageToSend, ClientHandler clientHandler) throws IOException {
+    public void broadcastMessage(String messageToSend, ClientHandler clientHandler) throws IOException {
         clientHandler.bufferedWriter.write(messageToSend);
         clientHandler.bufferedWriter.newLine();
         clientHandler.bufferedWriter.flush();
@@ -97,7 +97,6 @@ public class ClientHandler implements Runnable{
         }
     }
 
-    // TO DO - it throws exception when someone leaves game
     /**
      * Removes client from array of clients
      */
@@ -134,22 +133,10 @@ public class ClientHandler implements Runnable{
         return clientUsername;
     }
 
-    public int decideWhatToDo(){
-        int option = 0;
-        String numberOnly = "";
-        try{
-            String s = bufferedReader.readLine();
-            while(!isChoiceSyntaxOk(s,1,3)){
-                broadcastMessageToItself("Improper syntax of your answer, input number between 1 and 3");
-                s = bufferedReader.readLine();
-            }
-            numberOnly = extractNumbersFromString(s);
-            option = Integer.parseInt(numberOnly);
-            System.out.println(getClientUsername()+ " chose option "+option);
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-        return option;
+    // giving answers
+
+    private String extractNumbersFromString(String answer){
+        return answer.replaceAll("[^0-9]", "");
     }
 
     public boolean isChoiceSyntaxOk(String answer, int lowerBound, int upperBound){ // bounds are inclusive
@@ -160,11 +147,12 @@ public class ClientHandler implements Runnable{
         return number >= lowerBound && number <= upperBound;
     }
 
-    public int raiseStakes(){
+    private int returnDecision(int lowerBound, int upperBound){
         try{
             String s = bufferedReader.readLine();
-            while(!isChoiceSyntaxOk(s,1,1000000)){
-                broadcastMessageToItself("Improper syntax of your answer, input positive number");
+            while(!isChoiceSyntaxOk(s,lowerBound,upperBound)){
+                broadcastMessageToItself("Improper syntax of your answer, input number between " +
+                        lowerBound + " and " + upperBound);
                 s = bufferedReader.readLine();
             }
             String numberOnly = extractNumbersFromString(s);
@@ -175,68 +163,47 @@ public class ClientHandler implements Runnable{
         return 0;
     }
 
-
-    private String extractNumbersFromString(String answer){
-        return answer.replaceAll("[^0-9]", "");
+    public int decideWhichMoveToDo(){
+        return returnDecision(1,3);
     }
 
-    // swapping
+    public int decideHowMuchRaiseStakes(){
+        return returnDecision(1,1000000);
+    }
+
     public int decideWhatToSwap() {
-        try{
-            String s = bufferedReader.readLine();
-            while(!isChoiceSyntaxOk(s,0,5)){
-                broadcastMessageToItself("Improper syntax of your answer, input number between 0 and 5");
-                s = bufferedReader.readLine();
-            }
-            String numberOnly = extractNumbersFromString(s);
-            return Integer.parseInt(numberOnly);
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-        return 0;
+        return returnDecision(0,5);
     }
 
     private int chooseCardToSwap(){
-        try{
-            String s = bufferedReader.readLine();
-            while(!isChoiceSyntaxOk(s,1,5)){
-                broadcastMessageToItself("Improper syntax of your answer, input number between 1 and 5");
-                s = bufferedReader.readLine();
-            }
-            String numberOnly = extractNumbersFromString(s);
-            return Integer.parseInt(numberOnly);
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-        return 0;
+        return returnDecision(1,5);
     }
 
+
     public void swapCads(int swappedCards, Tie tie) {
-        if(swappedCards==0){
-            return;
-        }
         if(swappedCards==5){
             // player wants to swap all cards - no need to ask which of them
             for(int i = 0; i < 5; ++i){
                 player.swapCard(i, tie.getDeck());
             }
-            return;
         }
-        int[] ifSwapped = {0,0,0,0,0};
-        String[] numbers = {"1st","2nd","3rd","4th","5th"};
-        for(int i = 0; i < swappedCards; ++i){
-            broadcastMessageToItself("Choose index of the "+ numbers[i] + " card to swap, " +
-                    "input number between 1 and 5");
-            int option = chooseCardToSwap();
-            while(ifSwapped[option-1]==1){
-                broadcastMessageToItself("Choose card which you haven't chosen");
-                option = chooseCardToSwap();
+        else if(swappedCards>0){
+            int[] ifSwapped = {0,0,0,0,0};
+            String[] numbers = {"1st","2nd","3rd","4th","5th"};
+            for(int i = 0; i < swappedCards; ++i){
+                broadcastMessageToItself("Choose index of the "+ numbers[i] + " card to swap, " +
+                        "input number between 1 and 5");
+                int option = chooseCardToSwap();
+                while(ifSwapped[option-1]==1){
+                    broadcastMessageToItself("Choose card which you haven't chosen");
+                    option = chooseCardToSwap();
+                }
+                ifSwapped[option-1]=1;
             }
-            ifSwapped[option-1]=1;
-        }
-        for(int i = 0; i < 5; ++i){
-            if(ifSwapped[i]==1){
-                player.swapCard(i, tie.getDeck());
+            for(int i = 0; i < 5; ++i){
+                if(ifSwapped[i]==1){
+                    player.swapCard(i, tie.getDeck());
+                }
             }
         }
     }
