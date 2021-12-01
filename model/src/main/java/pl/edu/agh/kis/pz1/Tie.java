@@ -4,6 +4,9 @@ import pl.edu.agh.kis.pz1.util.Deck;
 import pl.edu.agh.kis.pz1.util.Move;
 import java.util.ArrayList;
 
+/**
+ * Aggregates poker tie parameters
+ */
 public class Tie {
     private int nrOfPlayers = 0;
     private Deck deck = new Deck(false);

@@ -1,19 +1,36 @@
 package pl.edu.agh.kis.pz1;
 
 import pl.edu.agh.kis.pz1.util.Card;
-
 import java.io.IOException;
 import java.util.ArrayList;
+
+/**
+ * Instantiation of the poker game - it provides proper game flow according to rules
+ */
 public class Game {
-    private ClientHandler currentPlayer;
-    public static ArrayList<ClientHandler> clientHandlers = new ArrayList<>(); // clients connected to socket
+    /**
+     * Clients connected to socket
+     */
+    public static ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
+
+    /**
+     * Clients in game - those who haven't passed yet
+     */
     public static ArrayList<ClientHandler> playersInGame = new ArrayList<>(); // clients in game
+
+    /**
+     * Instantiation of current tie
+     */
     public Tie tie = new Tie();
     private int WAIT = 1, PASS = 2, RAISE = 3;
     private boolean preparationRequired = false;
-
+    private ClientHandler currentPlayer;
     public ClientHandler getCurrentPlayer(){return currentPlayer;}
 
+    /**
+     * Enables players to play one full round of poker
+     * @throws IOException
+     */
     public void play() throws IOException {
         prepareGame();
         // 1st betting
@@ -80,9 +97,11 @@ public class Game {
         if(tie.isGameOver()){
             prepareForNewGame();
             preparationRequired = true;
+            tie.getDeck().dealOutNewDeck();
         }
         initPlayersInGameArray();
         prepareAfterInitialisation();
+        currentPlayer.broadcastMessageToAll(displayPlayersInGame());
         collectAnte();
         dealOutInitialCards();
         tie.getDeck().displayDeck();
@@ -110,7 +129,6 @@ public class Game {
         }
     }
 
-
     private void handleRaisingStakes(){
         currentPlayer.broadcastMessageToItself("Enter stake you want to raise: ");
         int raise = currentPlayer.decideHowMuchRaiseStakes();
@@ -134,6 +152,10 @@ public class Game {
         currentPlayer.broadcastMessageToAll("Common pool: "+ tie.getCommonPool());
     }
 
+    /**
+     * Executes given move
+     * @param move move made by a player
+     */
     public void handleMove(int move) {
         if(move==PASS){
             currentPlayer.player.setHasPassed();
@@ -183,6 +205,9 @@ public class Game {
         return true;
     }
 
+    /**
+     * Collects ante from all players in game and displays them info about that
+     */
     public void collectAnte() {
         currentPlayer.broadcastMessageToAll("\nAnte ("+tie.getAnte()+") was taken from your pool in order to join the game");
         for(ClientHandler player: clientHandlers){
@@ -212,17 +237,9 @@ public class Game {
      * initialises clientHandlers and playersInGame lists
      */
     public void initPlayersInGameArray() {
-        // parameters have be zeroed
-        //clientHandlers.clear();
-        //playersInGame.clear();
         clientHandlers.addAll(ClientHandler.clientHandlers);
         playersInGame.addAll(ClientHandler.clientHandlers);
         currentPlayer = clientHandlers.get(0);
-
-        //tie.players.clear();
-        //for(ClientHandler player: playersInGame){
-        //    tie.addPlayer(player.player);
-        //}
     }
 
     /**
@@ -249,6 +266,9 @@ public class Game {
         }
     }
 
+    /**
+     * Removes from playersInGame all players who passed
+     */
     public void removePassedPlayers() {
         int indexToRemove = -1;
         for(int i = 0; i < playersInGame.size();++i){
@@ -262,6 +282,9 @@ public class Game {
         }
     }
 
+    /**
+     * Set next player's turn
+     */
     public void thankUNext(){
         currentPlayer.player.setNotTheirTurn();
         int currentPlayersIndex = playersInGame.indexOf(currentPlayer);
@@ -275,6 +298,9 @@ public class Game {
         }
     }
 
+    /**
+     * Displays to all players whose turn is now
+     */
     public void showWhoseTurn(){
         currentPlayer.broadcastMessageToItself("It is your turn");
         currentPlayer.broadcastMessageToOthers("It is " + currentPlayer.getClientUsername() + "'s turn");
@@ -331,6 +357,7 @@ public class Game {
             playersInGame.get(0).broadcastMessageToAll(playersInGame.get(winnerIndex).getClientUsername() +
                     " wins - "+ playersInGame.get(winnerIndex).player.getCombination() + ", highest card: "+
                     playersInGame.get(winnerIndex).player.getHighestRankInCombination());
+            playersInGame.get(winnerIndex).player.collectAward(tie.getCommonPool());
         }
         else{
             playersInGame.get(0).broadcastMessageToAll("There is a tie!");
@@ -338,7 +365,11 @@ public class Game {
             playersInGame.get(0).broadcastMessageToAll(playersInGame.get(winnerIndex).getClientUsername() +
                     " and "+ playersInGame.get(indexSecondWinner).getClientUsername()+" win - "+ playersInGame.get(winnerIndex).player.getCombination()
                     + ", highest card: "+ playersInGame.get(winnerIndex).player.getHighestRankInCombination());
+            playersInGame.get(winnerIndex).player.collectAward(tie.getCommonPool()/2);
+            playersInGame.get(indexSecondWinner).player.collectAward(tie.getCommonPool()/2);
         }
+        tie.setGameOver();
+        tie.setPool(0);
     }
 
     public void restartGame() {

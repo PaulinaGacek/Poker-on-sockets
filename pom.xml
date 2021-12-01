@@ -5,7 +5,7 @@
   <artifactId>multi-module</artifactId>
   <version>1.0</version>
 
-  <name>Pom macierzysty</name>
+  <name>Multi-player poker on sockets</name>
   <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

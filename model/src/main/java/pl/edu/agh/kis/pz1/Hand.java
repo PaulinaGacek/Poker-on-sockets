@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * Utility class for evaluating strength of the player's hand
+ */
 public class Hand {
     private static final Map<Combination, Integer> combinationRanking = new TreeMap<>();
     private static final Map<Rank, Integer> rankRanking = new TreeMap<>();

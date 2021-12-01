@@ -4,9 +4,11 @@ import pl.edu.agh.kis.pz1.util.Card;
 import pl.edu.agh.kis.pz1.util.Combination;
 import pl.edu.agh.kis.pz1.util.Deck;
 import pl.edu.agh.kis.pz1.util.Rank;
-
 import java.util.ArrayList;
 
+/**
+ * Aggregates poker player's treats and possible actions
+ */
 public class Player {
     private ArrayList<Card> cards = new ArrayList<>();
     private int pool = 1000;

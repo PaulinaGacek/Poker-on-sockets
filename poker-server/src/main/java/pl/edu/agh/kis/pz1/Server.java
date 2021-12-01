@@ -6,6 +6,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+/**
+ * Game server responsible for creating socket and accept clients
+ */
 public class Server {
     private final ServerSocket serverSocket; // responsible for handling communication
     private static int nrOfPlayers = ClientHandler.clientHandlers.size();

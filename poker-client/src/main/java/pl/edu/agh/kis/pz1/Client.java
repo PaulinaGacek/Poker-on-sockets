@@ -3,7 +3,9 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-
+/**
+ * Responsible for connecting to the game server and exchange information between client and server
+ */
 public class Client {
 
     private Socket socket;

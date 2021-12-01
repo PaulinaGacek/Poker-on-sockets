@@ -56,6 +56,12 @@ public class Deck {
         return new Card();
     }
 
+    public void dealOutNewDeck(){
+        cards.clear();
+        initializeSortedDeck();
+        shuffle();
+    }
+
     public Deck(){
         initializeSortedDeck();
     }
