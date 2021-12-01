@@ -50,12 +50,10 @@ public class Server {
                             ClientHandler.clientHandlers.clear();
                             updateNrOfPlayers();
                             game.tie.getDeck().displayDeck();
-                            logMessage("Poker server is Running...");
                         }
                         else{
                             logMessage("Next round is up!");
                             game.tie.getDeck().displayDeck();
-                            logMessage("Poker server is Running...");
                             game.play();
                         }
                     }

@@ -59,7 +59,7 @@ public class ClientHandlerTest {
         prepare();
         ClientHandler clientHandler1 = new ClientHandler(socket, game, "a");
         ClientHandler clientHandler2 = new ClientHandler(socket, game, "b");
-        game.initPlayersInGameArrayTest();
+        game.initPlayersInGameArray();
         game.removePassedPlayers();
         clientHandler1.broadcastMessageToAll("example");
         assertNotNull(clientHandler1.getBufferedReader().lines().toString());

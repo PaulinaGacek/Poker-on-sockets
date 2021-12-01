@@ -26,9 +26,14 @@ Run as many clients, each in new terminal as you have declared: `java -jar poker
 
 
 ## How to play ##
+To start the game player has to input their name.
 
-In order to make any decision player has to input a proper integer number.
+Next, in order to make any decision player has to input a proper integer number.
 
 If the number is out of given range, server will ask player to input number once again, for example:
 
-** SERVER **
+**SERVER:**
+*<br />What do you want to do?<br />(1) Wait<br />(2) Pass<br />(3) Raise the stakes*
+
+Players can make such decisions only when it is their turn. Otherwise they have to wait for other players and 
+they are informed what other players did.

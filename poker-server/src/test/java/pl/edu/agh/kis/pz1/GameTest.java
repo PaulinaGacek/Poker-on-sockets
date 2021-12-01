@@ -140,19 +140,4 @@ public class GameTest {
         clean();
     }
 
-/*    @Test
-    public void playTest() throws IOException {
-        prepare();
-        ClientHandler  clientHandler1 = new ClientHandler(socket, game, "m");
-        ClientHandler  clientHandler2 = new ClientHandler(socket, game, "n");
-        ClientHandler  clientHandler3 = new ClientHandler(socket, game, "y");
-        game.tie.setGameOver();
-        game.play();
-        assertTrue(game.tie.isGameOver());
-        clientHandler1.removeClientHandler();
-        clientHandler2.removeClientHandler();
-        clientHandler3.removeClientHandler();
-        clean();
-    }*/
-
 }

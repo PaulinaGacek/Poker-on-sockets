@@ -22,7 +22,9 @@ public class Game {
      * Instantiation of current tie
      */
     public Tie tie = new Tie();
-    private int WAIT = 1, PASS = 2, RAISE = 3;
+    private final int WAIT = 1;
+    private final int PASS = 2;
+    private final int RAISE = 3;
     private boolean preparationRequired = false;
     private ClientHandler currentPlayer;
     public ClientHandler getCurrentPlayer(){return currentPlayer;}
@@ -65,34 +67,9 @@ public class Game {
     }
 
 
-    private void handleBetting() throws IOException {
-        for(int i = 0; i < playersInGame.size(); ++i){
-            checkIfGameOver();
-            showWhoseTurn();
-            currentPlayer.broadcastMessageToItself("\nCommon pool " + tie.getCommonPool() +
-                    "\nEntrance pool: "+tie.getPoolInCurrentBetting()+ "\n"
-                    + "You have already raised: "+ currentPlayer.player.getPoolInCurrentBetting()+"\n"+
-                    "What do you want to do?\n(1) Wait\n(2) Pass\n(3) Raise the stakes");
-
-            int move = currentPlayer.decideWhichMoveToDo();
-            handleMove(move);
-            while(!isMovePossible(move)){
-                currentPlayer.broadcastMessageToItself("Your move is invalid, do sth else");
-                move = currentPlayer.decideWhichMoveToDo();
-                handleMove(move);
-            }
-            if (move==PASS){
-                i--;
-            }
-            thankUNext();
-            removePassedPlayers();
-            currentPlayer.broadcastMessageToAll(displayPlayersInGame());
-            if(checkIfGameOver()){
-                break;
-            }
-        }
-    }
-
+    /**
+     * Prepares game parameters for new tie
+     */
     public void prepareGame(){
         if(tie.isGameOver()){
             prepareForNewGame();
@@ -125,6 +102,58 @@ public class Game {
             }
             for(Player player: tie.players){
                 player.setHasNotPassed();
+            }
+        }
+    }
+
+    /**
+     * initialises clientHandlers and playersInGame lists
+     */
+    public void initPlayersInGameArray() {
+        clientHandlers.addAll(ClientHandler.clientHandlers);
+        playersInGame.addAll(ClientHandler.clientHandlers);
+        currentPlayer = clientHandlers.get(0);
+    }
+
+    /**
+     * updates clientHandlers and playersInGame lists
+     */
+    public void updatePlayersInGame(){
+        if(ClientHandler.clientHandlers.size()!=clientHandlers.size()){
+            clientHandlers.clear();
+            clientHandlers.addAll(ClientHandler.clientHandlers);
+            currentPlayer = clientHandlers.get(0);
+        }
+        if(ClientHandler.clientHandlers.size()!=playersInGame.size()){
+            playersInGame.clear();
+            playersInGame.addAll(ClientHandler.clientHandlers);
+        }
+    }
+
+    private void handleBetting(){
+        for(int i = 0; i < playersInGame.size(); ++i){
+            checkIfGameOver();
+            showWhoseTurn();
+            currentPlayer.broadcastMessageToItself("\nCommon pool " + tie.getCommonPool() +
+                    "\nEntrance pool: "+tie.getPoolInCurrentBetting()+ "\n"
+                    + "You have already raised: "+ currentPlayer.player.getPoolInCurrentBetting()+"\n"+
+                    "What do you want to do?\n(1) Wait\n(2) Pass\n(3) Raise the stakes");
+
+            int move = currentPlayer.decideWhichMoveToDo();
+            handleMove(move);
+            while(!isMovePossible(move)){
+                currentPlayer.broadcastMessageToItself("Your move is invalid, do sth else");
+                move = currentPlayer.decideWhichMoveToDo();
+                handleMove(move);
+            }
+            if (move==PASS){
+                i--;
+            }
+            thankUNext();
+            removePassedPlayers();
+            currentPlayer.broadcastMessageToAll(displayPlayersInGame());
+            if(checkIfGameOver()){
+                break;
             }
         }
     }
@@ -233,38 +262,7 @@ public class Game {
         }
     }
 
-    /**
-     * initialises clientHandlers and playersInGame lists
-     */
-    public void initPlayersInGameArray() {
-        clientHandlers.addAll(ClientHandler.clientHandlers);
-        playersInGame.addAll(ClientHandler.clientHandlers);
-        currentPlayer = clientHandlers.get(0);
-    }
 
-    /**
-     * initialises clientHandlers and playersInGame lists
-     */
-    public void initPlayersInGameArrayTest() {
-        clientHandlers.addAll(ClientHandler.clientHandlers);
-        playersInGame.addAll(ClientHandler.clientHandlers);
-        currentPlayer = clientHandlers.get(0);
-    }
-
-    /**
-     * updates clientHandlers and playersInGame lists
-     */
-    public void updatePlayersInGame(){
-        if(ClientHandler.clientHandlers.size()!=clientHandlers.size()){
-            clientHandlers.clear();
-            clientHandlers.addAll(ClientHandler.clientHandlers);
-            currentPlayer = clientHandlers.get(0);
-        }
-        if(ClientHandler.clientHandlers.size()!=playersInGame.size()){
-            playersInGame.clear();
-            playersInGame.addAll(ClientHandler.clientHandlers);
-        }
-    }
 
     /**
      * Removes from playersInGame all players who passed
@@ -306,6 +304,9 @@ public class Game {
         currentPlayer.broadcastMessageToOthers("It is " + currentPlayer.getClientUsername() + "'s turn");
     }
 
+    /**
+     * @return String with enumerated players in game
+     */
     public String displayPlayersInGame(){
         StringBuilder message = new StringBuilder("Players in game: ");
         for(ClientHandler player: playersInGame){
@@ -314,6 +315,10 @@ public class Game {
         return message.toString();
     }
 
+    /**
+     * Game is over when there is only one player left
+     * @return whether game is over
+     */
     public boolean checkIfGameOver(){
         if(playersInGame.size()==1){
             tie.setGameOver();
@@ -329,7 +334,7 @@ public class Game {
     }
 
     // swapping
-    public void handleSwapping(){
+    private void handleSwapping(){
         for(ClientHandler player: playersInGame){
             showWhoseTurn();
             player.broadcastMessageToItself("\nYour cards: "+ player.player.displayCards());
@@ -344,7 +349,7 @@ public class Game {
     }
 
     // judge hand
-    public void handleRevealingHands() {
+    private void handleRevealingHands() {
         ArrayList<ArrayList<Card>> playersCards = new ArrayList<>();
         for(ClientHandler player: playersInGame){
             player.broadcastMessageToOthers(player.getClientUsername()+"'s cards: "+
@@ -372,17 +377,25 @@ public class Game {
         tie.setPool(0);
     }
 
+    /**
+     * Resets game parameter and delete players from game
+     */
     public void restartGame() {
         clientHandlers.clear(); // order changed
         playersInGame.clear();
         tie.restart();
     }
 
+    /**
+     * Ask and collects feedback from players whether they want to play again
+     * @return whether all players want to play again
+     */
     public boolean areEagerForNextRound() {
         for(ClientHandler player: clientHandlers){
             player.broadcastMessageToOthers(player.getClientUsername()+" is making decision whether wants to play again");
             player.broadcastMessageToItself("\n\nRound is finished!\nDo you want to continue the game?\n(1) YES\n(2) NO");
             if(player.decideIfStayInGame()==2){
+                player.broadcastMessageToAll("\nPlayers do not want to continue - game is over");
                 return false;
             }
         }

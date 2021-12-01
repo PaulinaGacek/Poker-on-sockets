@@ -44,4 +44,11 @@ public class DeckTest {
         assertEquals(card, new Card(Suit.club, Rank._2));
 
     }
+
+    @Test
+    public void dealOutNewDeckTest(){
+        Deck sortedDeck = new Deck();
+        sortedDeck.dealOutNewDeck();
+        assertEquals(sortedDeck.getSize(), 52);
+    }
 }

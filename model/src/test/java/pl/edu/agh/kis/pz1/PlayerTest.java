@@ -128,4 +128,12 @@ public class PlayerTest {
         assertTrue(newPlayer1.getHasPassed());
         assertFalse(newPlayer2.getHasPassed());
     }
+
+    @Test
+    public void collectAwardTest(){
+        Player newPlayer1 = new Player("player 1");
+        assertEquals(newPlayer1.getPool(),1000);
+        newPlayer1.collectAward(100);
+        assertEquals(newPlayer1.getPool(),1100);
+    }
 }

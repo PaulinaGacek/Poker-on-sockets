@@ -78,6 +78,7 @@ public class Hand {
     }
 
     /**
+     * Points out single winner index in players array
      * @param playersCards array numberOfPlayers x 5 with their cards
      * @return index of the first winner
      */
@@ -96,6 +97,7 @@ public class Hand {
     }
 
     /**
+     * In the case of a tie points out second winner
      * @param playersCards array numberOfPlayers x 5 with their cards
      * @return index of the second winner
      */
@@ -185,7 +187,11 @@ public class Hand {
         return getHighestRank(cards);
     }
 
-
+    /**
+     * Returns the highest rank within player's combination
+     * @param cards player's 5 cards
+     * @return the highest rank within their combination
+     */
     public Rank getHighestRankInCombination(ArrayList<Card> cards){
         int[] playersRanks = {0,0,0,0,0,0,0,0,0,0,0,0,0};
         for(Card card: cards){
@@ -207,6 +213,11 @@ public class Hand {
         return getHighestRank(cards);
     }
 
+    /**
+     * Looks for some hand combination in player's cards
+     * @param cards player's 5 cards
+     * @return player's combination
+     */
     public Combination findCombinationInCards(List<Card> cards){
         int[] playersRanks = {0,0,0,0,0,0,0,0,0,0,0,0,0};
         int[] playersSuits = {0,0,0,0};

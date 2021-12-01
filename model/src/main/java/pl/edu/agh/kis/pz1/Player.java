@@ -42,9 +42,19 @@ public class Player {
 
     // game
 
+    /**
+     * Adds amount to the players pool
+     * @param amount amount to add the pool
+     */
     public void collectAward(int amount){
         pool += amount;
     }
+
+    /**
+     * Distract given amount from players pool
+     * @param amount amount to pay
+     * @return whether player can afford
+     */
     public boolean pay(int amount){
         if(amount < 0 || amount > pool){
             return false;
@@ -91,11 +101,17 @@ public class Player {
         return true;
     }
 
+    /**
+     * @return combination that player has on hand
+     */
     public Combination getCombination(){
         Hand hand = new Hand();
         return hand.findCombinationInCards(getCards());
     }
 
+    /**
+     * @return the highest rank player has within their combination - important in therms of a tie
+     */
     public Rank getHighestRankInCombination(){
         Hand hand = new Hand();
         return hand.getHighestRankInCombination(getCards());
